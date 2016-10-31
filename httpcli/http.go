@@ -11,9 +11,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/mesos/mesos-go"
-	"github.com/mesos/mesos-go/encoding"
-	"github.com/mesos/mesos-go/recordio"
+	"code.uber.internal/infra/mesos-go"
+	"code.uber.internal/infra/mesos-go/encoding"
+	"code.uber.internal/infra/mesos-go/recordio"
 )
 
 var (

@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/mesos/mesos-go"
-	"github.com/mesos/mesos-go/scheduler"
+	"code.uber.internal/infra/mesos-go"
+	"code.uber.internal/infra/mesos-go/scheduler"
 )
 
 // Filters sets a scheduler.Call's internal Filters, required for Accept and Decline calls.

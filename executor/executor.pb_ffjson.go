@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"github.com/mesos/mesos-go"
+	"code.uber.internal/infra/mesos-go"
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 	"reflect"
 )

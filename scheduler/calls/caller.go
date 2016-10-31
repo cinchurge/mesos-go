@@ -1,8 +1,8 @@
 package calls
 
 import (
-	"github.com/mesos/mesos-go"
-	"github.com/mesos/mesos-go/scheduler"
+	"code.uber.internal/infra/mesos-go"
+	"code.uber.internal/infra/mesos-go/scheduler"
 )
 
 // Caller is the public interface this framework scheduler's should consume

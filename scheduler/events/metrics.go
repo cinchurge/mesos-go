@@ -3,8 +3,8 @@ package events
 import (
 	"strings"
 
-	xmetrics "github.com/mesos/mesos-go/extras/metrics"
-	"github.com/mesos/mesos-go/scheduler"
+	xmetrics "code.uber.internal/infra/mesos-go/extras/metrics"
+	"code.uber.internal/infra/mesos-go/scheduler"
 )
 
 func Metrics(harness xmetrics.Harness) Decorator {

@@ -1,8 +1,8 @@
 package events
 
 import (
-	"github.com/mesos/mesos-go/scheduler"
-	"github.com/mesos/mesos-go/scheduler/calls"
+	"code.uber.internal/infra/mesos-go/scheduler"
+	"code.uber.internal/infra/mesos-go/scheduler/calls"
 )
 
 type (

@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/mesos/mesos-go"
-	"github.com/mesos/mesos-go/httpcli"
-	"github.com/mesos/mesos-go/scheduler"
-	"github.com/mesos/mesos-go/scheduler/calls"
+	"code.uber.internal/infra/mesos-go"
+	"code.uber.internal/infra/mesos-go/httpcli"
+	"code.uber.internal/infra/mesos-go/scheduler"
+	"code.uber.internal/infra/mesos-go/scheduler/calls"
 )
 
 const (

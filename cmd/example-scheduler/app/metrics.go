@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	schedmetrics "github.com/mesos/mesos-go/cmd/example-scheduler/app/metrics"
-	xmetrics "github.com/mesos/mesos-go/extras/metrics"
+	schedmetrics "code.uber.internal/infra/mesos-go/cmd/example-scheduler/app/metrics"
+	xmetrics "code.uber.internal/infra/mesos-go/extras/metrics"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

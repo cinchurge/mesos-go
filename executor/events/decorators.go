@@ -1,7 +1,7 @@
 package events
 
 import (
-	"github.com/mesos/mesos-go/executor"
+	"code.uber.internal/infra/mesos-go/executor"
 )
 
 type (

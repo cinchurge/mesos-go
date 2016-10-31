@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/mesos/mesos-go/cmd/example-scheduler/app"
+	"code.uber.internal/infra/mesos-go/cmd/example-scheduler/app"
 )
 
 func main() {

@@ -1,7 +1,7 @@
 package events
 
 import (
-	"github.com/mesos/mesos-go/scheduler"
+	"code.uber.internal/infra/mesos-go/scheduler"
 )
 
 type PredicateBool func() bool

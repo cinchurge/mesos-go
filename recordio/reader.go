@@ -6,7 +6,7 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/mesos/mesos-go/encoding/framing"
+	"code.uber.internal/infra/mesos-go/encoding/framing"
 )
 
 // NewReader returns an io.Reader that unpacks the data read from r out of

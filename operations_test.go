@@ -3,7 +3,7 @@ package mesos_test
 import (
 	"testing"
 
-	"github.com/mesos/mesos-go"
+	"code.uber.internal/infra/mesos-go"
 )
 
 func TestOpCreate(t *testing.T) {

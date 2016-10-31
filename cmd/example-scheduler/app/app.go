@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/mesos/mesos-go"
-	"github.com/mesos/mesos-go/backoff"
-	xmetrics "github.com/mesos/mesos-go/extras/metrics"
-	"github.com/mesos/mesos-go/extras/scheduler/controller"
-	"github.com/mesos/mesos-go/scheduler"
-	"github.com/mesos/mesos-go/scheduler/calls"
-	"github.com/mesos/mesos-go/scheduler/events"
+	"code.uber.internal/infra/mesos-go"
+	"code.uber.internal/infra/mesos-go/backoff"
+	xmetrics "code.uber.internal/infra/mesos-go/extras/metrics"
+	"code.uber.internal/infra/mesos-go/extras/scheduler/controller"
+	"code.uber.internal/infra/mesos-go/scheduler"
+	"code.uber.internal/infra/mesos-go/scheduler/calls"
+	"code.uber.internal/infra/mesos-go/scheduler/events"
 )
 
 var (

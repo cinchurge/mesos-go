@@ -3,11 +3,11 @@ package controller
 import (
 	"fmt"
 
-	"github.com/mesos/mesos-go"
-	"github.com/mesos/mesos-go/encoding"
-	"github.com/mesos/mesos-go/scheduler"
-	"github.com/mesos/mesos-go/scheduler/calls"
-	"github.com/mesos/mesos-go/scheduler/events"
+	"code.uber.internal/infra/mesos-go"
+	"code.uber.internal/infra/mesos-go/encoding"
+	"code.uber.internal/infra/mesos-go/scheduler"
+	"code.uber.internal/infra/mesos-go/scheduler/calls"
+	"code.uber.internal/infra/mesos-go/scheduler/events"
 )
 
 type (

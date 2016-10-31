@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	xmetrics "github.com/mesos/mesos-go/extras/metrics"
+	xmetrics "code.uber.internal/infra/mesos-go/extras/metrics"
 )
 
 func forever(name string, jobRestartDelay time.Duration, counter xmetrics.Counter, f func() error) {

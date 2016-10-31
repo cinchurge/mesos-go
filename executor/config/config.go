@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	mesostime "github.com/mesos/mesos-go/time"
+	mesostime "code.uber.internal/infra/mesos-go/time"
 )
 
 type Config struct {
