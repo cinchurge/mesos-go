@@ -7,9 +7,9 @@ package executor
 
 import (
 	"bytes"
+	"code.uber.internal/infra/mesos-go"
 	"encoding/base64"
 	"fmt"
-	"code.uber.internal/infra/mesos-go"
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 	"reflect"
 )
@@ -943,13 +943,13 @@ handle_UnacknowledgedTasks:
 			uj.UnacknowledgedTasks = nil
 		} else {
 
-			uj.UnacknowledgedTasks = make([]mesos.TaskInfo, 0)
+			uj.UnacknowledgedTasks = []mesos.TaskInfo{}
 
 			wantVal := true
 
 			for {
 
-				var v mesos.TaskInfo
+				var tmp_uj__UnacknowledgedTasks mesos.TaskInfo
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -970,7 +970,7 @@ handle_UnacknowledgedTasks:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.TaskInfo kind=struct quoted=false*/
+				/* handler: tmp_uj__UnacknowledgedTasks type=mesos.TaskInfo kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -979,14 +979,15 @@ handle_UnacknowledgedTasks:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__UnacknowledgedTasks.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.UnacknowledgedTasks = append(uj.UnacknowledgedTasks, v)
+				uj.UnacknowledgedTasks = append(uj.UnacknowledgedTasks, tmp_uj__UnacknowledgedTasks)
+
 				wantVal = false
 			}
 		}
@@ -1011,13 +1012,13 @@ handle_UnacknowledgedUpdates:
 			uj.UnacknowledgedUpdates = nil
 		} else {
 
-			uj.UnacknowledgedUpdates = make([]Call_Update, 0)
+			uj.UnacknowledgedUpdates = []Call_Update{}
 
 			wantVal := true
 
 			for {
 
-				var v Call_Update
+				var tmp_uj__UnacknowledgedUpdates Call_Update
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -1038,7 +1039,7 @@ handle_UnacknowledgedUpdates:
 					wantVal = true
 				}
 
-				/* handler: v type=executor.Call_Update kind=struct quoted=false*/
+				/* handler: tmp_uj__UnacknowledgedUpdates type=executor.Call_Update kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -1047,14 +1048,15 @@ handle_UnacknowledgedUpdates:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__UnacknowledgedUpdates.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.UnacknowledgedUpdates = append(uj.UnacknowledgedUpdates, v)
+				uj.UnacknowledgedUpdates = append(uj.UnacknowledgedUpdates, tmp_uj__UnacknowledgedUpdates)
+
 				wantVal = false
 			}
 		}

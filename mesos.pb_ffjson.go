@@ -907,13 +907,13 @@ handle_Resources:
 			uj.Resources = nil
 		} else {
 
-			uj.Resources = make([]Resource, 0)
+			uj.Resources = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Resources Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -934,7 +934,7 @@ handle_Resources:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Resources type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -943,14 +943,15 @@ handle_Resources:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Resources.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Resources = append(uj.Resources, v)
+				uj.Resources = append(uj.Resources, tmp_uj__Resources)
+
 				wantVal = false
 			}
 		}
@@ -975,13 +976,13 @@ handle_Attributes:
 			uj.Attributes = nil
 		} else {
 
-			uj.Attributes = make([]Attribute, 0)
+			uj.Attributes = []Attribute{}
 
 			wantVal := true
 
 			for {
 
-				var v Attribute
+				var tmp_uj__Attributes Attribute
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -1002,7 +1003,7 @@ handle_Attributes:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Attribute kind=struct quoted=false*/
+				/* handler: tmp_uj__Attributes type=mesos.Attribute kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -1011,14 +1012,15 @@ handle_Attributes:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Attributes.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Attributes = append(uj.Attributes, v)
+				uj.Attributes = append(uj.Attributes, tmp_uj__Attributes)
+
 				wantVal = false
 			}
 		}
@@ -2356,13 +2358,13 @@ handle_URIs:
 			uj.URIs = nil
 		} else {
 
-			uj.URIs = make([]CommandInfo_URI, 0)
+			uj.URIs = []CommandInfo_URI{}
 
 			wantVal := true
 
 			for {
 
-				var v CommandInfo_URI
+				var tmp_uj__URIs CommandInfo_URI
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -2383,7 +2385,7 @@ handle_URIs:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.CommandInfo_URI kind=struct quoted=false*/
+				/* handler: tmp_uj__URIs type=mesos.CommandInfo_URI kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -2392,14 +2394,15 @@ handle_URIs:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__URIs.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.URIs = append(uj.URIs, v)
+				uj.URIs = append(uj.URIs, tmp_uj__URIs)
+
 				wantVal = false
 			}
 		}
@@ -2522,13 +2525,13 @@ handle_Arguments:
 			uj.Arguments = nil
 		} else {
 
-			uj.Arguments = make([]string, 0)
+			uj.Arguments = []string{}
 
 			wantVal := true
 
 			for {
 
-				var v string
+				var tmp_uj__Arguments string
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -2549,7 +2552,7 @@ handle_Arguments:
 					wantVal = true
 				}
 
-				/* handler: v type=string kind=string quoted=false*/
+				/* handler: tmp_uj__Arguments type=string kind=string quoted=false*/
 
 				{
 
@@ -2565,12 +2568,13 @@ handle_Arguments:
 
 						outBuf := fs.Output.Bytes()
 
-						v = string(string(outBuf))
+						tmp_uj__Arguments = string(string(outBuf))
 
 					}
 				}
 
-				uj.Arguments = append(uj.Arguments, v)
+				uj.Arguments = append(uj.Arguments, tmp_uj__Arguments)
+
 				wantVal = false
 			}
 		}
@@ -3610,13 +3614,13 @@ handle_Volumes:
 			uj.Volumes = nil
 		} else {
 
-			uj.Volumes = make([]Volume, 0)
+			uj.Volumes = []Volume{}
 
 			wantVal := true
 
 			for {
 
-				var v Volume
+				var tmp_uj__Volumes Volume
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -3637,7 +3641,7 @@ handle_Volumes:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Volume kind=struct quoted=false*/
+				/* handler: tmp_uj__Volumes type=mesos.Volume kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -3646,14 +3650,15 @@ handle_Volumes:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Volumes.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Volumes = append(uj.Volumes, v)
+				uj.Volumes = append(uj.Volumes, tmp_uj__Volumes)
+
 				wantVal = false
 			}
 		}
@@ -3762,13 +3767,13 @@ handle_NetworkInfos:
 			uj.NetworkInfos = nil
 		} else {
 
-			uj.NetworkInfos = make([]NetworkInfo, 0)
+			uj.NetworkInfos = []NetworkInfo{}
 
 			wantVal := true
 
 			for {
 
-				var v NetworkInfo
+				var tmp_uj__NetworkInfos NetworkInfo
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -3789,7 +3794,7 @@ handle_NetworkInfos:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.NetworkInfo kind=struct quoted=false*/
+				/* handler: tmp_uj__NetworkInfos type=mesos.NetworkInfo kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -3798,14 +3803,15 @@ handle_NetworkInfos:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__NetworkInfos.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.NetworkInfos = append(uj.NetworkInfos, v)
+				uj.NetworkInfos = append(uj.NetworkInfos, tmp_uj__NetworkInfos)
+
 				wantVal = false
 			}
 		}
@@ -4259,13 +4265,13 @@ handle_PortMappings:
 			uj.PortMappings = nil
 		} else {
 
-			uj.PortMappings = make([]ContainerInfo_DockerInfo_PortMapping, 0)
+			uj.PortMappings = []ContainerInfo_DockerInfo_PortMapping{}
 
 			wantVal := true
 
 			for {
 
-				var v ContainerInfo_DockerInfo_PortMapping
+				var tmp_uj__PortMappings ContainerInfo_DockerInfo_PortMapping
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -4286,7 +4292,7 @@ handle_PortMappings:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.ContainerInfo_DockerInfo_PortMapping kind=struct quoted=false*/
+				/* handler: tmp_uj__PortMappings type=mesos.ContainerInfo_DockerInfo_PortMapping kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -4295,14 +4301,15 @@ handle_PortMappings:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__PortMappings.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.PortMappings = append(uj.PortMappings, v)
+				uj.PortMappings = append(uj.PortMappings, tmp_uj__PortMappings)
+
 				wantVal = false
 			}
 		}
@@ -4368,13 +4375,13 @@ handle_Parameters:
 			uj.Parameters = nil
 		} else {
 
-			uj.Parameters = make([]Parameter, 0)
+			uj.Parameters = []Parameter{}
 
 			wantVal := true
 
 			for {
 
-				var v Parameter
+				var tmp_uj__Parameters Parameter
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -4395,7 +4402,7 @@ handle_Parameters:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Parameter kind=struct quoted=false*/
+				/* handler: tmp_uj__Parameters type=mesos.Parameter kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -4404,14 +4411,15 @@ handle_Parameters:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Parameters.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Parameters = append(uj.Parameters, v)
+				uj.Parameters = append(uj.Parameters, tmp_uj__Parameters)
+
 				wantVal = false
 			}
 		}
@@ -5235,13 +5243,13 @@ handle_NetworkInfos:
 			uj.NetworkInfos = nil
 		} else {
 
-			uj.NetworkInfos = make([]NetworkInfo, 0)
+			uj.NetworkInfos = []NetworkInfo{}
 
 			wantVal := true
 
 			for {
 
-				var v NetworkInfo
+				var tmp_uj__NetworkInfos NetworkInfo
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -5262,7 +5270,7 @@ handle_NetworkInfos:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.NetworkInfo kind=struct quoted=false*/
+				/* handler: tmp_uj__NetworkInfos type=mesos.NetworkInfo kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -5271,14 +5279,15 @@ handle_NetworkInfos:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__NetworkInfos.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.NetworkInfos = append(uj.NetworkInfos, v)
+				uj.NetworkInfos = append(uj.NetworkInfos, tmp_uj__NetworkInfos)
+
 				wantVal = false
 			}
 		}
@@ -5759,13 +5768,13 @@ handle_Credentials:
 			uj.Credentials = nil
 		} else {
 
-			uj.Credentials = make([]Credential, 0)
+			uj.Credentials = []Credential{}
 
 			wantVal := true
 
 			for {
 
-				var v Credential
+				var tmp_uj__Credentials Credential
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -5786,7 +5795,7 @@ handle_Credentials:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Credential kind=struct quoted=false*/
+				/* handler: tmp_uj__Credentials type=mesos.Credential kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -5795,14 +5804,15 @@ handle_Credentials:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Credentials.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Credentials = append(uj.Credentials, v)
+				uj.Credentials = append(uj.Credentials, tmp_uj__Credentials)
+
 				wantVal = false
 			}
 		}
@@ -6751,13 +6761,13 @@ handle_Variables:
 			uj.Variables = nil
 		} else {
 
-			uj.Variables = make([]Environment_Variable, 0)
+			uj.Variables = []Environment_Variable{}
 
 			wantVal := true
 
 			for {
 
-				var v Environment_Variable
+				var tmp_uj__Variables Environment_Variable
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -6778,7 +6788,7 @@ handle_Variables:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Environment_Variable kind=struct quoted=false*/
+				/* handler: tmp_uj__Variables type=mesos.Environment_Variable kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -6787,14 +6797,15 @@ handle_Variables:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Variables.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Variables = append(uj.Variables, v)
+				uj.Variables = append(uj.Variables, tmp_uj__Variables)
+
 				wantVal = false
 			}
 		}
@@ -7781,13 +7792,13 @@ handle_Resources:
 			uj.Resources = nil
 		} else {
 
-			uj.Resources = make([]Resource, 0)
+			uj.Resources = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Resources Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -7808,7 +7819,7 @@ handle_Resources:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Resources type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -7817,14 +7828,15 @@ handle_Resources:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Resources.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Resources = append(uj.Resources, v)
+				uj.Resources = append(uj.Resources, tmp_uj__Resources)
+
 				wantVal = false
 			}
 		}
@@ -9099,13 +9111,13 @@ handle_Capabilities:
 			uj.Capabilities = nil
 		} else {
 
-			uj.Capabilities = make([]FrameworkInfo_Capability, 0)
+			uj.Capabilities = []FrameworkInfo_Capability{}
 
 			wantVal := true
 
 			for {
 
-				var v FrameworkInfo_Capability
+				var tmp_uj__Capabilities FrameworkInfo_Capability
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -9126,7 +9138,7 @@ handle_Capabilities:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.FrameworkInfo_Capability kind=struct quoted=false*/
+				/* handler: tmp_uj__Capabilities type=mesos.FrameworkInfo_Capability kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -9135,14 +9147,15 @@ handle_Capabilities:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Capabilities.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Capabilities = append(uj.Capabilities, v)
+				uj.Capabilities = append(uj.Capabilities, tmp_uj__Capabilities)
+
 				wantVal = false
 			}
 		}
@@ -10246,13 +10259,13 @@ handle_Statuses:
 			uj.Statuses = nil
 		} else {
 
-			uj.Statuses = make([]uint32, 0)
+			uj.Statuses = []uint32{}
 
 			wantVal := true
 
 			for {
 
-				var v uint32
+				var tmp_uj__Statuses uint32
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -10273,7 +10286,7 @@ handle_Statuses:
 					wantVal = true
 				}
 
-				/* handler: v type=uint32 kind=uint32 quoted=false*/
+				/* handler: tmp_uj__Statuses type=uint32 kind=uint32 quoted=false*/
 
 				{
 					if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -10293,12 +10306,13 @@ handle_Statuses:
 							return fs.WrapErr(err)
 						}
 
-						v = uint32(tval)
+						tmp_uj__Statuses = uint32(tval)
 
 					}
 				}
 
-				uj.Statuses = append(uj.Statuses, v)
+				uj.Statuses = append(uj.Statuses, tmp_uj__Statuses)
+
 				wantVal = false
 			}
 		}
@@ -13398,13 +13412,13 @@ handle_Resources:
 			uj.Resources = nil
 		} else {
 
-			uj.Resources = make([]Resource, 0)
+			uj.Resources = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Resources Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -13425,7 +13439,7 @@ handle_Resources:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Resources type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -13434,14 +13448,15 @@ handle_Resources:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Resources.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Resources = append(uj.Resources, v)
+				uj.Resources = append(uj.Resources, tmp_uj__Resources)
+
 				wantVal = false
 			}
 		}
@@ -15153,13 +15168,13 @@ handle_Labels:
 			uj.Labels = nil
 		} else {
 
-			uj.Labels = make([]Label, 0)
+			uj.Labels = []Label{}
 
 			wantVal := true
 
 			for {
 
-				var v Label
+				var tmp_uj__Labels Label
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -15180,7 +15195,7 @@ handle_Labels:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Label kind=struct quoted=false*/
+				/* handler: tmp_uj__Labels type=mesos.Label kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -15189,14 +15204,15 @@ handle_Labels:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Labels.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Labels = append(uj.Labels, v)
+				uj.Labels = append(uj.Labels, tmp_uj__Labels)
+
 				wantVal = false
 			}
 		}
@@ -16656,13 +16672,13 @@ handle_IPAddresses:
 			uj.IPAddresses = nil
 		} else {
 
-			uj.IPAddresses = make([]NetworkInfo_IPAddress, 0)
+			uj.IPAddresses = []NetworkInfo_IPAddress{}
 
 			wantVal := true
 
 			for {
 
-				var v NetworkInfo_IPAddress
+				var tmp_uj__IPAddresses NetworkInfo_IPAddress
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -16683,7 +16699,7 @@ handle_IPAddresses:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.NetworkInfo_IPAddress kind=struct quoted=false*/
+				/* handler: tmp_uj__IPAddresses type=mesos.NetworkInfo_IPAddress kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -16692,14 +16708,15 @@ handle_IPAddresses:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__IPAddresses.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.IPAddresses = append(uj.IPAddresses, v)
+				uj.IPAddresses = append(uj.IPAddresses, tmp_uj__IPAddresses)
+
 				wantVal = false
 			}
 		}
@@ -16786,13 +16803,13 @@ handle_Groups:
 			uj.Groups = nil
 		} else {
 
-			uj.Groups = make([]string, 0)
+			uj.Groups = []string{}
 
 			wantVal := true
 
 			for {
 
-				var v string
+				var tmp_uj__Groups string
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -16813,7 +16830,7 @@ handle_Groups:
 					wantVal = true
 				}
 
-				/* handler: v type=string kind=string quoted=false*/
+				/* handler: tmp_uj__Groups type=string kind=string quoted=false*/
 
 				{
 
@@ -16829,12 +16846,13 @@ handle_Groups:
 
 						outBuf := fs.Output.Bytes()
 
-						v = string(string(outBuf))
+						tmp_uj__Groups = string(string(outBuf))
 
 					}
 				}
 
-				uj.Groups = append(uj.Groups, v)
+				uj.Groups = append(uj.Groups, tmp_uj__Groups)
+
 				wantVal = false
 			}
 		}
@@ -17720,13 +17738,13 @@ handle_Resources:
 			uj.Resources = nil
 		} else {
 
-			uj.Resources = make([]Resource, 0)
+			uj.Resources = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Resources Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -17747,7 +17765,7 @@ handle_Resources:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Resources type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -17756,14 +17774,15 @@ handle_Resources:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Resources.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Resources = append(uj.Resources, v)
+				uj.Resources = append(uj.Resources, tmp_uj__Resources)
+
 				wantVal = false
 			}
 		}
@@ -17788,13 +17807,13 @@ handle_Attributes:
 			uj.Attributes = nil
 		} else {
 
-			uj.Attributes = make([]Attribute, 0)
+			uj.Attributes = []Attribute{}
 
 			wantVal := true
 
 			for {
 
-				var v Attribute
+				var tmp_uj__Attributes Attribute
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -17815,7 +17834,7 @@ handle_Attributes:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Attribute kind=struct quoted=false*/
+				/* handler: tmp_uj__Attributes type=mesos.Attribute kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -17824,14 +17843,15 @@ handle_Attributes:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Attributes.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Attributes = append(uj.Attributes, v)
+				uj.Attributes = append(uj.Attributes, tmp_uj__Attributes)
+
 				wantVal = false
 			}
 		}
@@ -17856,13 +17876,13 @@ handle_ExecutorIDs:
 			uj.ExecutorIDs = nil
 		} else {
 
-			uj.ExecutorIDs = make([]ExecutorID, 0)
+			uj.ExecutorIDs = []ExecutorID{}
 
 			wantVal := true
 
 			for {
 
-				var v ExecutorID
+				var tmp_uj__ExecutorIDs ExecutorID
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -17883,7 +17903,7 @@ handle_ExecutorIDs:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.ExecutorID kind=struct quoted=false*/
+				/* handler: tmp_uj__ExecutorIDs type=mesos.ExecutorID kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -17892,14 +17912,15 @@ handle_ExecutorIDs:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__ExecutorIDs.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.ExecutorIDs = append(uj.ExecutorIDs, v)
+				uj.ExecutorIDs = append(uj.ExecutorIDs, tmp_uj__ExecutorIDs)
+
 				wantVal = false
 			}
 		}
@@ -18845,13 +18866,13 @@ handle_Volumes:
 			uj.Volumes = nil
 		} else {
 
-			uj.Volumes = make([]Resource, 0)
+			uj.Volumes = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Volumes Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -18872,7 +18893,7 @@ handle_Volumes:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Volumes type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -18881,14 +18902,15 @@ handle_Volumes:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Volumes.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Volumes = append(uj.Volumes, v)
+				uj.Volumes = append(uj.Volumes, tmp_uj__Volumes)
+
 				wantVal = false
 			}
 		}
@@ -19094,13 +19116,13 @@ handle_Volumes:
 			uj.Volumes = nil
 		} else {
 
-			uj.Volumes = make([]Resource, 0)
+			uj.Volumes = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Volumes Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -19121,7 +19143,7 @@ handle_Volumes:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Volumes type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -19130,14 +19152,15 @@ handle_Volumes:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Volumes.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Volumes = append(uj.Volumes, v)
+				uj.Volumes = append(uj.Volumes, tmp_uj__Volumes)
+
 				wantVal = false
 			}
 		}
@@ -19343,13 +19366,13 @@ handle_TaskInfos:
 			uj.TaskInfos = nil
 		} else {
 
-			uj.TaskInfos = make([]TaskInfo, 0)
+			uj.TaskInfos = []TaskInfo{}
 
 			wantVal := true
 
 			for {
 
-				var v TaskInfo
+				var tmp_uj__TaskInfos TaskInfo
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -19370,7 +19393,7 @@ handle_TaskInfos:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.TaskInfo kind=struct quoted=false*/
+				/* handler: tmp_uj__TaskInfos type=mesos.TaskInfo kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -19379,14 +19402,15 @@ handle_TaskInfos:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__TaskInfos.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.TaskInfos = append(uj.TaskInfos, v)
+				uj.TaskInfos = append(uj.TaskInfos, tmp_uj__TaskInfos)
+
 				wantVal = false
 			}
 		}
@@ -19592,13 +19616,13 @@ handle_Resources:
 			uj.Resources = nil
 		} else {
 
-			uj.Resources = make([]Resource, 0)
+			uj.Resources = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Resources Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -19619,7 +19643,7 @@ handle_Resources:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Resources type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -19628,14 +19652,15 @@ handle_Resources:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Resources.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Resources = append(uj.Resources, v)
+				uj.Resources = append(uj.Resources, tmp_uj__Resources)
+
 				wantVal = false
 			}
 		}
@@ -19841,13 +19866,13 @@ handle_Resources:
 			uj.Resources = nil
 		} else {
 
-			uj.Resources = make([]Resource, 0)
+			uj.Resources = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Resources Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -19868,7 +19893,7 @@ handle_Resources:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Resources type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -19877,14 +19902,15 @@ handle_Resources:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Resources.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Resources = append(uj.Resources, v)
+				uj.Resources = append(uj.Resources, tmp_uj__Resources)
+
 				wantVal = false
 			}
 		}
@@ -20327,13 +20353,13 @@ handle_Parameter:
 			uj.Parameter = nil
 		} else {
 
-			uj.Parameter = make([]Parameter, 0)
+			uj.Parameter = []Parameter{}
 
 			wantVal := true
 
 			for {
 
-				var v Parameter
+				var tmp_uj__Parameter Parameter
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -20354,7 +20380,7 @@ handle_Parameter:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Parameter kind=struct quoted=false*/
+				/* handler: tmp_uj__Parameter type=mesos.Parameter kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -20363,14 +20389,15 @@ handle_Parameter:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Parameter.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Parameter = append(uj.Parameter, v)
+				uj.Parameter = append(uj.Parameter, tmp_uj__Parameter)
+
 				wantVal = false
 			}
 		}
@@ -24253,13 +24280,13 @@ handle_Ports:
 			uj.Ports = nil
 		} else {
 
-			uj.Ports = make([]Port, 0)
+			uj.Ports = []Port{}
 
 			wantVal := true
 
 			for {
 
-				var v Port
+				var tmp_uj__Ports Port
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -24280,7 +24307,7 @@ handle_Ports:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Port kind=struct quoted=false*/
+				/* handler: tmp_uj__Ports type=mesos.Port kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -24289,14 +24316,15 @@ handle_Ports:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Ports.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Ports = append(uj.Ports, v)
+				uj.Ports = append(uj.Ports, tmp_uj__Ports)
+
 				wantVal = false
 			}
 		}
@@ -24870,13 +24898,13 @@ handle_Limits:
 			uj.Limits = nil
 		} else {
 
-			uj.Limits = make([]RateLimit, 0)
+			uj.Limits = []RateLimit{}
 
 			wantVal := true
 
 			for {
 
-				var v RateLimit
+				var tmp_uj__Limits RateLimit
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -24897,7 +24925,7 @@ handle_Limits:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.RateLimit kind=struct quoted=false*/
+				/* handler: tmp_uj__Limits type=mesos.RateLimit kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -24906,14 +24934,15 @@ handle_Limits:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Limits.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Limits = append(uj.Limits, v)
+				uj.Limits = append(uj.Limits, tmp_uj__Limits)
+
 				wantVal = false
 			}
 		}
@@ -25249,13 +25278,13 @@ handle_Resources:
 			uj.Resources = nil
 		} else {
 
-			uj.Resources = make([]Resource, 0)
+			uj.Resources = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Resources Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -25276,7 +25305,7 @@ handle_Resources:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Resources type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -25285,14 +25314,15 @@ handle_Resources:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Resources.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Resources = append(uj.Resources, v)
+				uj.Resources = append(uj.Resources, tmp_uj__Resources)
+
 				wantVal = false
 			}
 		}
@@ -28546,13 +28576,13 @@ handle_NetTrafficControlStatistics:
 			uj.NetTrafficControlStatistics = nil
 		} else {
 
-			uj.NetTrafficControlStatistics = make([]TrafficControlStatistics, 0)
+			uj.NetTrafficControlStatistics = []TrafficControlStatistics{}
 
 			wantVal := true
 
 			for {
 
-				var v TrafficControlStatistics
+				var tmp_uj__NetTrafficControlStatistics TrafficControlStatistics
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -28573,7 +28603,7 @@ handle_NetTrafficControlStatistics:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.TrafficControlStatistics kind=struct quoted=false*/
+				/* handler: tmp_uj__NetTrafficControlStatistics type=mesos.TrafficControlStatistics kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -28582,14 +28612,15 @@ handle_NetTrafficControlStatistics:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__NetTrafficControlStatistics.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.NetTrafficControlStatistics = append(uj.NetTrafficControlStatistics, v)
+				uj.NetTrafficControlStatistics = append(uj.NetTrafficControlStatistics, tmp_uj__NetTrafficControlStatistics)
+
 				wantVal = false
 			}
 		}
@@ -28864,13 +28895,13 @@ handle_Executors:
 			uj.Executors = nil
 		} else {
 
-			uj.Executors = make([]ResourceUsage_Executor, 0)
+			uj.Executors = []ResourceUsage_Executor{}
 
 			wantVal := true
 
 			for {
 
-				var v ResourceUsage_Executor
+				var tmp_uj__Executors ResourceUsage_Executor
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -28891,7 +28922,7 @@ handle_Executors:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.ResourceUsage_Executor kind=struct quoted=false*/
+				/* handler: tmp_uj__Executors type=mesos.ResourceUsage_Executor kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -28900,14 +28931,15 @@ handle_Executors:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Executors.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Executors = append(uj.Executors, v)
+				uj.Executors = append(uj.Executors, tmp_uj__Executors)
+
 				wantVal = false
 			}
 		}
@@ -28932,13 +28964,13 @@ handle_Total:
 			uj.Total = nil
 		} else {
 
-			uj.Total = make([]Resource, 0)
+			uj.Total = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Total Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -28959,7 +28991,7 @@ handle_Total:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Total type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -28968,14 +29000,15 @@ handle_Total:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Total.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Total = append(uj.Total, v)
+				uj.Total = append(uj.Total, tmp_uj__Total)
+
 				wantVal = false
 			}
 		}
@@ -29301,13 +29334,13 @@ handle_Allocated:
 			uj.Allocated = nil
 		} else {
 
-			uj.Allocated = make([]Resource, 0)
+			uj.Allocated = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Allocated Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -29328,7 +29361,7 @@ handle_Allocated:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Allocated type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -29337,14 +29370,15 @@ handle_Allocated:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Allocated.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Allocated = append(uj.Allocated, v)
+				uj.Allocated = append(uj.Allocated, tmp_uj__Allocated)
+
 				wantVal = false
 			}
 		}
@@ -32268,13 +32302,13 @@ handle_Resources:
 			uj.Resources = nil
 		} else {
 
-			uj.Resources = make([]Resource, 0)
+			uj.Resources = []Resource{}
 
 			wantVal := true
 
 			for {
 
-				var v Resource
+				var tmp_uj__Resources Resource
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -32295,7 +32329,7 @@ handle_Resources:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Resource kind=struct quoted=false*/
+				/* handler: tmp_uj__Resources type=mesos.Resource kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -32304,14 +32338,15 @@ handle_Resources:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Resources.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Resources = append(uj.Resources, v)
+				uj.Resources = append(uj.Resources, tmp_uj__Resources)
+
 				wantVal = false
 			}
 		}
@@ -35825,13 +35860,13 @@ handle_Query:
 			uj.Query = nil
 		} else {
 
-			uj.Query = make([]Parameter, 0)
+			uj.Query = []Parameter{}
 
 			wantVal := true
 
 			for {
 
-				var v Parameter
+				var tmp_uj__Query Parameter
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -35852,7 +35887,7 @@ handle_Query:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Parameter kind=struct quoted=false*/
+				/* handler: tmp_uj__Query type=mesos.Parameter kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -35861,14 +35896,15 @@ handle_Query:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Query.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Query = append(uj.Query, v)
+				uj.Query = append(uj.Query, tmp_uj__Query)
+
 				wantVal = false
 			}
 		}
@@ -37681,13 +37717,13 @@ handle_Range:
 			uj.Range = nil
 		} else {
 
-			uj.Range = make([]Value_Range, 0)
+			uj.Range = []Value_Range{}
 
 			wantVal := true
 
 			for {
 
-				var v Value_Range
+				var tmp_uj__Range Value_Range
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -37708,7 +37744,7 @@ handle_Range:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Value_Range kind=struct quoted=false*/
+				/* handler: tmp_uj__Range type=mesos.Value_Range kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -37717,14 +37753,15 @@ handle_Range:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Range.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Range = append(uj.Range, v)
+				uj.Range = append(uj.Range, tmp_uj__Range)
+
 				wantVal = false
 			}
 		}
@@ -38119,13 +38156,13 @@ handle_Item:
 			uj.Item = nil
 		} else {
 
-			uj.Item = make([]string, 0)
+			uj.Item = []string{}
 
 			wantVal := true
 
 			for {
 
-				var v string
+				var tmp_uj__Item string
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -38146,7 +38183,7 @@ handle_Item:
 					wantVal = true
 				}
 
-				/* handler: v type=string kind=string quoted=false*/
+				/* handler: tmp_uj__Item type=string kind=string quoted=false*/
 
 				{
 
@@ -38162,12 +38199,13 @@ handle_Item:
 
 						outBuf := fs.Output.Bytes()
 
-						v = string(string(outBuf))
+						tmp_uj__Item = string(string(outBuf))
 
 					}
 				}
 
-				uj.Item = append(uj.Item, v)
+				uj.Item = append(uj.Item, tmp_uj__Item)
+
 				wantVal = false
 			}
 		}

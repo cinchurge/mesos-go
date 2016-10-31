@@ -1,0 +1,13 @@
+package: code.uber.internal/infra/mesos-go
+import:
+- package: github.com/gogo/protobuf
+  subpackages:
+  - gogoproto
+  - proto
+- package: github.com/pborman/uuid
+- package: github.com/pquerna/ffjson
+  subpackages:
+  - fflib/v1
+- package: github.com/prometheus/client_golang
+  subpackages:
+  - prometheus

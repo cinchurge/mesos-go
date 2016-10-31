@@ -7,10 +7,10 @@ package scheduler
 
 import (
 	"bytes"
+	"code.uber.internal/infra/mesos-go"
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"code.uber.internal/infra/mesos-go"
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 	"reflect"
 )
@@ -1103,13 +1103,13 @@ handle_OfferIDs:
 			uj.OfferIDs = nil
 		} else {
 
-			uj.OfferIDs = make([]mesos.OfferID, 0)
+			uj.OfferIDs = []mesos.OfferID{}
 
 			wantVal := true
 
 			for {
 
-				var v mesos.OfferID
+				var tmp_uj__OfferIDs mesos.OfferID
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -1130,7 +1130,7 @@ handle_OfferIDs:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.OfferID kind=struct quoted=false*/
+				/* handler: tmp_uj__OfferIDs type=mesos.OfferID kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -1139,14 +1139,15 @@ handle_OfferIDs:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__OfferIDs.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.OfferIDs = append(uj.OfferIDs, v)
+				uj.OfferIDs = append(uj.OfferIDs, tmp_uj__OfferIDs)
+
 				wantVal = false
 			}
 		}
@@ -1171,13 +1172,13 @@ handle_Operations:
 			uj.Operations = nil
 		} else {
 
-			uj.Operations = make([]mesos.Offer_Operation, 0)
+			uj.Operations = []mesos.Offer_Operation{}
 
 			wantVal := true
 
 			for {
 
-				var v mesos.Offer_Operation
+				var tmp_uj__Operations mesos.Offer_Operation
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -1198,7 +1199,7 @@ handle_Operations:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Offer_Operation kind=struct quoted=false*/
+				/* handler: tmp_uj__Operations type=mesos.Offer_Operation kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -1207,14 +1208,15 @@ handle_Operations:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Operations.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Operations = append(uj.Operations, v)
+				uj.Operations = append(uj.Operations, tmp_uj__Operations)
+
 				wantVal = false
 			}
 		}
@@ -1796,13 +1798,13 @@ handle_OfferIDs:
 			uj.OfferIDs = nil
 		} else {
 
-			uj.OfferIDs = make([]mesos.OfferID, 0)
+			uj.OfferIDs = []mesos.OfferID{}
 
 			wantVal := true
 
 			for {
 
-				var v mesos.OfferID
+				var tmp_uj__OfferIDs mesos.OfferID
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -1823,7 +1825,7 @@ handle_OfferIDs:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.OfferID kind=struct quoted=false*/
+				/* handler: tmp_uj__OfferIDs type=mesos.OfferID kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -1832,14 +1834,15 @@ handle_OfferIDs:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__OfferIDs.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.OfferIDs = append(uj.OfferIDs, v)
+				uj.OfferIDs = append(uj.OfferIDs, tmp_uj__OfferIDs)
+
 				wantVal = false
 			}
 		}
@@ -2639,13 +2642,13 @@ handle_Tasks:
 			uj.Tasks = nil
 		} else {
 
-			uj.Tasks = make([]Call_Reconcile_Task, 0)
+			uj.Tasks = []Call_Reconcile_Task{}
 
 			wantVal := true
 
 			for {
 
-				var v Call_Reconcile_Task
+				var tmp_uj__Tasks Call_Reconcile_Task
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -2666,7 +2669,7 @@ handle_Tasks:
 					wantVal = true
 				}
 
-				/* handler: v type=scheduler.Call_Reconcile_Task kind=struct quoted=false*/
+				/* handler: tmp_uj__Tasks type=scheduler.Call_Reconcile_Task kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -2675,14 +2678,15 @@ handle_Tasks:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Tasks.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Tasks = append(uj.Tasks, v)
+				uj.Tasks = append(uj.Tasks, tmp_uj__Tasks)
+
 				wantVal = false
 			}
 		}
@@ -3144,13 +3148,13 @@ handle_Requests:
 			uj.Requests = nil
 		} else {
 
-			uj.Requests = make([]mesos.Request, 0)
+			uj.Requests = []mesos.Request{}
 
 			wantVal := true
 
 			for {
 
-				var v mesos.Request
+				var tmp_uj__Requests mesos.Request
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -3171,7 +3175,7 @@ handle_Requests:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Request kind=struct quoted=false*/
+				/* handler: tmp_uj__Requests type=mesos.Request kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -3180,14 +3184,15 @@ handle_Requests:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Requests.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Requests = append(uj.Requests, v)
+				uj.Requests = append(uj.Requests, tmp_uj__Requests)
+
 				wantVal = false
 			}
 		}
@@ -5417,13 +5422,13 @@ handle_Offers:
 			uj.Offers = nil
 		} else {
 
-			uj.Offers = make([]mesos.Offer, 0)
+			uj.Offers = []mesos.Offer{}
 
 			wantVal := true
 
 			for {
 
-				var v mesos.Offer
+				var tmp_uj__Offers mesos.Offer
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -5444,7 +5449,7 @@ handle_Offers:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.Offer kind=struct quoted=false*/
+				/* handler: tmp_uj__Offers type=mesos.Offer kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -5453,14 +5458,15 @@ handle_Offers:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__Offers.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.Offers = append(uj.Offers, v)
+				uj.Offers = append(uj.Offers, tmp_uj__Offers)
+
 				wantVal = false
 			}
 		}
@@ -5485,13 +5491,13 @@ handle_InverseOffers:
 			uj.InverseOffers = nil
 		} else {
 
-			uj.InverseOffers = make([]mesos.InverseOffer, 0)
+			uj.InverseOffers = []mesos.InverseOffer{}
 
 			wantVal := true
 
 			for {
 
-				var v mesos.InverseOffer
+				var tmp_uj__InverseOffers mesos.InverseOffer
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -5512,7 +5518,7 @@ handle_InverseOffers:
 					wantVal = true
 				}
 
-				/* handler: v type=mesos.InverseOffer kind=struct quoted=false*/
+				/* handler: tmp_uj__InverseOffers type=mesos.InverseOffer kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -5521,14 +5527,15 @@ handle_InverseOffers:
 						goto mainparse
 					}
 
-					err = v.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					err = tmp_uj__InverseOffers.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
 						return err
 					}
 					state = fflib.FFParse_after_value
 				}
 
-				uj.InverseOffers = append(uj.InverseOffers, v)
+				uj.InverseOffers = append(uj.InverseOffers, tmp_uj__InverseOffers)
+
 				wantVal = false
 			}
 		}

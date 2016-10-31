@@ -18,8 +18,7 @@ import proto "github.com/gogo/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import mesos "code.uber.internal/infra/mesos-go"
-
-// discarding unused import gogoproto "github.com/gogo/protobuf/gogoproto"
+import _ "github.com/gogo/protobuf/gogoproto"
 
 import strconv "strconv"
 
@@ -36,6 +35,12 @@ import io "io"
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the proto package it is being compiled against.
+// A compilation error at this line likely means your copy of the
+// proto package needs to be updated.
+const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 
 // Possible event types, followed by message definitions if
 // applicable.
@@ -96,6 +101,7 @@ func (x *Event_Type) UnmarshalJSON(data []byte) error {
 	*x = Event_Type(value)
 	return nil
 }
+func (Event_Type) EnumDescriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0, 0} }
 
 // Possible call types, followed by message definitions if
 // applicable.
@@ -161,6 +167,7 @@ func (x *Call_Type) UnmarshalJSON(data []byte) error {
 	*x = Call_Type(value)
 	return nil
 }
+func (Call_Type) EnumDescriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 0} }
 
 // *
 // Scheduler event API.
@@ -181,8 +188,9 @@ type Event struct {
 	Error      *Event_Error      `protobuf:"bytes,8,opt,name=error" json:"error,omitempty"`
 }
 
-func (m *Event) Reset()      { *m = Event{} }
-func (*Event) ProtoMessage() {}
+func (m *Event) Reset()                    { *m = Event{} }
+func (*Event) ProtoMessage()               {}
+func (*Event) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0} }
 
 func (m *Event) GetType() Event_Type {
 	if m != nil && m.Type != nil {
@@ -242,14 +250,15 @@ func (m *Event) GetError() *Event_Error {
 
 // First event received when the scheduler subscribes.
 type Event_Subscribed struct {
-	FrameworkID *mesos.FrameworkID `protobuf:"bytes,1,req,name=framework_id" json:"framework_id,omitempty"`
+	FrameworkID *mesos.FrameworkID `protobuf:"bytes,1,req,name=framework_id,json=frameworkId" json:"framework_id,omitempty"`
 	// This value will be set if the master is sending heartbeats. See
 	// the comment above on 'HEARTBEAT' for more details.
-	HeartbeatIntervalSeconds *float64 `protobuf:"fixed64,2,opt,name=heartbeat_interval_seconds" json:"heartbeat_interval_seconds,omitempty"`
+	HeartbeatIntervalSeconds *float64 `protobuf:"fixed64,2,opt,name=heartbeat_interval_seconds,json=heartbeatIntervalSeconds" json:"heartbeat_interval_seconds,omitempty"`
 }
 
-func (m *Event_Subscribed) Reset()      { *m = Event_Subscribed{} }
-func (*Event_Subscribed) ProtoMessage() {}
+func (m *Event_Subscribed) Reset()                    { *m = Event_Subscribed{} }
+func (*Event_Subscribed) ProtoMessage()               {}
+func (*Event_Subscribed) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0, 0} }
 
 func (m *Event_Subscribed) GetFrameworkID() *mesos.FrameworkID {
 	if m != nil {
@@ -274,11 +283,12 @@ func (m *Event_Subscribed) GetHeartbeatIntervalSeconds() float64 {
 // release the resources without violating an SLA.
 type Event_Offers struct {
 	Offers        []mesos.Offer        `protobuf:"bytes,1,rep,name=offers" json:"offers"`
-	InverseOffers []mesos.InverseOffer `protobuf:"bytes,2,rep,name=inverse_offers" json:"inverse_offers"`
+	InverseOffers []mesos.InverseOffer `protobuf:"bytes,2,rep,name=inverse_offers,json=inverseOffers" json:"inverse_offers"`
 }
 
-func (m *Event_Offers) Reset()      { *m = Event_Offers{} }
-func (*Event_Offers) ProtoMessage() {}
+func (m *Event_Offers) Reset()                    { *m = Event_Offers{} }
+func (*Event_Offers) ProtoMessage()               {}
+func (*Event_Offers) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0, 1} }
 
 func (m *Event_Offers) GetOffers() []mesos.Offer {
 	if m != nil {
@@ -299,11 +309,12 @@ func (m *Event_Offers) GetInverseOffers() []mesos.InverseOffer {
 // needs to be rescinded. Any future calls ('Accept' / 'Decline') made
 // by the scheduler regarding this offer will be invalid.
 type Event_Rescind struct {
-	OfferID mesos.OfferID `protobuf:"bytes,1,req,name=offer_id" json:"offer_id"`
+	OfferID mesos.OfferID `protobuf:"bytes,1,req,name=offer_id,json=offerId" json:"offer_id"`
 }
 
-func (m *Event_Rescind) Reset()      { *m = Event_Rescind{} }
-func (*Event_Rescind) ProtoMessage() {}
+func (m *Event_Rescind) Reset()                    { *m = Event_Rescind{} }
+func (*Event_Rescind) ProtoMessage()               {}
+func (*Event_Rescind) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0, 2} }
 
 func (m *Event_Rescind) GetOfferID() mesos.OfferID {
 	if m != nil {
@@ -325,8 +336,9 @@ type Event_Update struct {
 	Status mesos.TaskStatus `protobuf:"bytes,1,req,name=status" json:"status"`
 }
 
-func (m *Event_Update) Reset()      { *m = Event_Update{} }
-func (*Event_Update) ProtoMessage() {}
+func (m *Event_Update) Reset()                    { *m = Event_Update{} }
+func (*Event_Update) ProtoMessage()               {}
+func (*Event_Update) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0, 3} }
 
 func (m *Event_Update) GetStatus() mesos.TaskStatus {
 	if m != nil {
@@ -341,13 +353,14 @@ func (m *Event_Update) GetStatus() mesos.TaskStatus {
 // guarantees) to the scheduler. It is up to the executor to retry
 // if the message is dropped for any reason.
 type Event_Message struct {
-	AgentID    mesos.AgentID    `protobuf:"bytes,1,req,name=agent_id" json:"agent_id"`
-	ExecutorID mesos.ExecutorID `protobuf:"bytes,2,req,name=executor_id" json:"executor_id"`
+	AgentID    mesos.AgentID    `protobuf:"bytes,1,req,name=agent_id,json=agentId" json:"agent_id"`
+	ExecutorID mesos.ExecutorID `protobuf:"bytes,2,req,name=executor_id,json=executorId" json:"executor_id"`
 	Data       []byte           `protobuf:"bytes,3,req,name=data" json:"data,omitempty"`
 }
 
-func (m *Event_Message) Reset()      { *m = Event_Message{} }
-func (*Event_Message) ProtoMessage() {}
+func (m *Event_Message) Reset()                    { *m = Event_Message{} }
+func (*Event_Message) ProtoMessage()               {}
+func (*Event_Message) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0, 4} }
 
 func (m *Event_Message) GetAgentID() mesos.AgentID {
 	if m != nil {
@@ -381,16 +394,17 @@ func (m *Event_Message) GetData() []byte {
 // TODO(vinod): Consider splitting the lost agent and terminated
 // executor into separate events and ensure it's reliably generated.
 type Event_Failure struct {
-	AgentID *mesos.AgentID `protobuf:"bytes,1,opt,name=agent_id" json:"agent_id,omitempty"`
+	AgentID *mesos.AgentID `protobuf:"bytes,1,opt,name=agent_id,json=agentId" json:"agent_id,omitempty"`
 	// If this was just a failure of an executor on an agent then
 	// 'executor_id' will be set and possibly 'status' (if we were
 	// able to determine the exit status).
-	ExecutorID *mesos.ExecutorID `protobuf:"bytes,2,opt,name=executor_id" json:"executor_id,omitempty"`
+	ExecutorID *mesos.ExecutorID `protobuf:"bytes,2,opt,name=executor_id,json=executorId" json:"executor_id,omitempty"`
 	Status     *int32            `protobuf:"varint,3,opt,name=status" json:"status,omitempty"`
 }
 
-func (m *Event_Failure) Reset()      { *m = Event_Failure{} }
-func (*Event_Failure) ProtoMessage() {}
+func (m *Event_Failure) Reset()                    { *m = Event_Failure{} }
+func (*Event_Failure) ProtoMessage()               {}
+func (*Event_Failure) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0, 5} }
 
 func (m *Event_Failure) GetAgentID() *mesos.AgentID {
 	if m != nil {
@@ -420,8 +434,9 @@ type Event_Error struct {
 	Message string `protobuf:"bytes,1,req,name=message" json:"message"`
 }
 
-func (m *Event_Error) Reset()      { *m = Event_Error{} }
-func (*Event_Error) ProtoMessage() {}
+func (m *Event_Error) Reset()                    { *m = Event_Error{} }
+func (*Event_Error) ProtoMessage()               {}
+func (*Event_Error) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{0, 6} }
 
 func (m *Event_Error) GetMessage() string {
 	if m != nil {
@@ -442,7 +457,7 @@ type Call struct {
 	// FrameworkInfo (in any further 'Subscribe' calls). This allows the
 	// master to identify a scheduler correctly across disconnections,
 	// failovers, etc.
-	FrameworkID *mesos.FrameworkID `protobuf:"bytes,1,opt,name=framework_id" json:"framework_id,omitempty"`
+	FrameworkID *mesos.FrameworkID `protobuf:"bytes,1,opt,name=framework_id,json=frameworkId" json:"framework_id,omitempty"`
 	// Type of the call, indicates which optional field below should be
 	// present if that type has a nested message definition.
 	Type        *Call_Type        `protobuf:"varint,2,req,name=type,enum=mesos.scheduler.Call_Type" json:"type,omitempty"`
@@ -457,8 +472,9 @@ type Call struct {
 	Request     *Call_Request     `protobuf:"bytes,11,opt,name=request" json:"request,omitempty"`
 }
 
-func (m *Call) Reset()      { *m = Call{} }
-func (*Call) ProtoMessage() {}
+func (m *Call) Reset()                    { *m = Call{} }
+func (*Call) ProtoMessage()               {}
+func (*Call) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1} }
 
 func (m *Call) GetFrameworkID() *mesos.FrameworkID {
 	if m != nil {
@@ -543,7 +559,7 @@ func (m *Call) GetRequest() *Call_Request {
 type Call_Subscribe struct {
 	// See the comments below on 'framework_id' on the semantics for
 	// 'framework_info.id'.
-	FrameworkInfo *mesos.FrameworkInfo `protobuf:"bytes,1,req,name=framework_info" json:"framework_info,omitempty"`
+	FrameworkInfo *mesos.FrameworkInfo `protobuf:"bytes,1,req,name=framework_info,json=frameworkInfo" json:"framework_info,omitempty"`
 	// NOTE: 'force' field is not present in v1/scheduler.proto because it is
 	// only used by the scheduler driver. The driver sets it to true when the
 	// scheduler re-registers for the first time after a failover. Once
@@ -554,8 +570,9 @@ type Call_Subscribe struct {
 	Force bool `protobuf:"varint,2,opt,name=force" json:"force"`
 }
 
-func (m *Call_Subscribe) Reset()      { *m = Call_Subscribe{} }
-func (*Call_Subscribe) ProtoMessage() {}
+func (m *Call_Subscribe) Reset()                    { *m = Call_Subscribe{} }
+func (*Call_Subscribe) ProtoMessage()               {}
+func (*Call_Subscribe) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 0} }
 
 func (m *Call_Subscribe) GetFrameworkInfo() *mesos.FrameworkInfo {
 	if m != nil {
@@ -594,13 +611,14 @@ func (m *Call_Subscribe) GetForce() bool {
 // cannot be used in more than one `Accept` call.
 // NOTE: All offers must belong to the same agent.
 type Call_Accept struct {
-	OfferIDs   []mesos.OfferID         `protobuf:"bytes,1,rep,name=offer_ids" json:"offer_ids"`
+	OfferIDs   []mesos.OfferID         `protobuf:"bytes,1,rep,name=offer_ids,json=offerIds" json:"offer_ids"`
 	Operations []mesos.Offer_Operation `protobuf:"bytes,2,rep,name=operations" json:"operations"`
 	Filters    *mesos.Filters          `protobuf:"bytes,3,opt,name=filters" json:"filters,omitempty"`
 }
 
-func (m *Call_Accept) Reset()      { *m = Call_Accept{} }
-func (*Call_Accept) ProtoMessage() {}
+func (m *Call_Accept) Reset()                    { *m = Call_Accept{} }
+func (*Call_Accept) ProtoMessage()               {}
+func (*Call_Accept) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 1} }
 
 func (m *Call_Accept) GetOfferIDs() []mesos.OfferID {
 	if m != nil {
@@ -628,12 +646,13 @@ func (m *Call_Accept) GetFilters() *mesos.Filters {
 // as sending an Accept call with no operations. See comments on
 // top of 'Accept' for semantics.
 type Call_Decline struct {
-	OfferIDs []mesos.OfferID `protobuf:"bytes,1,rep,name=offer_ids" json:"offer_ids"`
+	OfferIDs []mesos.OfferID `protobuf:"bytes,1,rep,name=offer_ids,json=offerIds" json:"offer_ids"`
 	Filters  *mesos.Filters  `protobuf:"bytes,2,opt,name=filters" json:"filters,omitempty"`
 }
 
-func (m *Call_Decline) Reset()      { *m = Call_Decline{} }
-func (*Call_Decline) ProtoMessage() {}
+func (m *Call_Decline) Reset()                    { *m = Call_Decline{} }
+func (*Call_Decline) ProtoMessage()               {}
+func (*Call_Decline) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 2} }
 
 func (m *Call_Decline) GetOfferIDs() []mesos.OfferID {
 	if m != nil {
@@ -657,12 +676,13 @@ func (m *Call_Decline) GetFilters() *mesos.Filters {
 // If the task is unknown to the master, a TASK_LOST update is
 // generated.
 type Call_Kill struct {
-	TaskID  mesos.TaskID   `protobuf:"bytes,1,req,name=task_id" json:"task_id"`
-	AgentID *mesos.AgentID `protobuf:"bytes,2,opt,name=agent_id" json:"agent_id,omitempty"`
+	TaskID  mesos.TaskID   `protobuf:"bytes,1,req,name=task_id,json=taskId" json:"task_id"`
+	AgentID *mesos.AgentID `protobuf:"bytes,2,opt,name=agent_id,json=agentId" json:"agent_id,omitempty"`
 }
 
-func (m *Call_Kill) Reset()      { *m = Call_Kill{} }
-func (*Call_Kill) ProtoMessage() {}
+func (m *Call_Kill) Reset()                    { *m = Call_Kill{} }
+func (*Call_Kill) ProtoMessage()               {}
+func (*Call_Kill) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 3} }
 
 func (m *Call_Kill) GetTaskID() mesos.TaskID {
 	if m != nil {
@@ -686,12 +706,13 @@ func (m *Call_Kill) GetAgentID() *mesos.AgentID {
 // forcefully destroy the container (executor and its tasks) and
 // transition its active tasks to TASK_LOST.
 type Call_Shutdown struct {
-	ExecutorID mesos.ExecutorID `protobuf:"bytes,1,req,name=executor_id" json:"executor_id"`
-	AgentID    mesos.AgentID    `protobuf:"bytes,2,req,name=agent_id" json:"agent_id"`
+	ExecutorID mesos.ExecutorID `protobuf:"bytes,1,req,name=executor_id,json=executorId" json:"executor_id"`
+	AgentID    mesos.AgentID    `protobuf:"bytes,2,req,name=agent_id,json=agentId" json:"agent_id"`
 }
 
-func (m *Call_Shutdown) Reset()      { *m = Call_Shutdown{} }
-func (*Call_Shutdown) ProtoMessage() {}
+func (m *Call_Shutdown) Reset()                    { *m = Call_Shutdown{} }
+func (*Call_Shutdown) ProtoMessage()               {}
+func (*Call_Shutdown) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 4} }
 
 func (m *Call_Shutdown) GetExecutorID() mesos.ExecutorID {
 	if m != nil {
@@ -713,13 +734,14 @@ func (m *Call_Shutdown) GetAgentID() mesos.AgentID {
 // updates are retried by the agent until they are acknowledged by
 // the scheduler.
 type Call_Acknowledge struct {
-	AgentID mesos.AgentID `protobuf:"bytes,1,req,name=agent_id" json:"agent_id"`
-	TaskID  mesos.TaskID  `protobuf:"bytes,2,req,name=task_id" json:"task_id"`
+	AgentID mesos.AgentID `protobuf:"bytes,1,req,name=agent_id,json=agentId" json:"agent_id"`
+	TaskID  mesos.TaskID  `protobuf:"bytes,2,req,name=task_id,json=taskId" json:"task_id"`
 	UUID    []byte        `protobuf:"bytes,3,req,name=uuid" json:"uuid,omitempty"`
 }
 
-func (m *Call_Acknowledge) Reset()      { *m = Call_Acknowledge{} }
-func (*Call_Acknowledge) ProtoMessage() {}
+func (m *Call_Acknowledge) Reset()                    { *m = Call_Acknowledge{} }
+func (*Call_Acknowledge) ProtoMessage()               {}
+func (*Call_Acknowledge) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 5} }
 
 func (m *Call_Acknowledge) GetAgentID() mesos.AgentID {
 	if m != nil {
@@ -752,8 +774,9 @@ type Call_Reconcile struct {
 	Tasks []Call_Reconcile_Task `protobuf:"bytes,1,rep,name=tasks" json:"tasks"`
 }
 
-func (m *Call_Reconcile) Reset()      { *m = Call_Reconcile{} }
-func (*Call_Reconcile) ProtoMessage() {}
+func (m *Call_Reconcile) Reset()                    { *m = Call_Reconcile{} }
+func (*Call_Reconcile) ProtoMessage()               {}
+func (*Call_Reconcile) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 6} }
 
 func (m *Call_Reconcile) GetTasks() []Call_Reconcile_Task {
 	if m != nil {
@@ -764,12 +787,15 @@ func (m *Call_Reconcile) GetTasks() []Call_Reconcile_Task {
 
 // TODO(vinod): Support arbitrary queries than just state of tasks.
 type Call_Reconcile_Task struct {
-	TaskID  mesos.TaskID   `protobuf:"bytes,1,req,name=task_id" json:"task_id"`
-	AgentID *mesos.AgentID `protobuf:"bytes,2,opt,name=agent_id" json:"agent_id,omitempty"`
+	TaskID  mesos.TaskID   `protobuf:"bytes,1,req,name=task_id,json=taskId" json:"task_id"`
+	AgentID *mesos.AgentID `protobuf:"bytes,2,opt,name=agent_id,json=agentId" json:"agent_id,omitempty"`
 }
 
 func (m *Call_Reconcile_Task) Reset()      { *m = Call_Reconcile_Task{} }
 func (*Call_Reconcile_Task) ProtoMessage() {}
+func (*Call_Reconcile_Task) Descriptor() ([]byte, []int) {
+	return fileDescriptorScheduler, []int{1, 6, 0}
+}
 
 func (m *Call_Reconcile_Task) GetTaskID() mesos.TaskID {
 	if m != nil {
@@ -789,13 +815,14 @@ func (m *Call_Reconcile_Task) GetAgentID() *mesos.AgentID {
 // neither interprets this data nor makes any guarantees about the
 // delivery of this message to the executor.
 type Call_Message struct {
-	AgentID    mesos.AgentID    `protobuf:"bytes,1,req,name=agent_id" json:"agent_id"`
-	ExecutorID mesos.ExecutorID `protobuf:"bytes,2,req,name=executor_id" json:"executor_id"`
+	AgentID    mesos.AgentID    `protobuf:"bytes,1,req,name=agent_id,json=agentId" json:"agent_id"`
+	ExecutorID mesos.ExecutorID `protobuf:"bytes,2,req,name=executor_id,json=executorId" json:"executor_id"`
 	Data       []byte           `protobuf:"bytes,3,req,name=data" json:"data,omitempty"`
 }
 
-func (m *Call_Message) Reset()      { *m = Call_Message{} }
-func (*Call_Message) ProtoMessage() {}
+func (m *Call_Message) Reset()                    { *m = Call_Message{} }
+func (*Call_Message) ProtoMessage()               {}
+func (*Call_Message) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 7} }
 
 func (m *Call_Message) GetAgentID() mesos.AgentID {
 	if m != nil {
@@ -828,8 +855,9 @@ type Call_Request struct {
 	Requests []mesos.Request `protobuf:"bytes,1,rep,name=requests" json:"requests"`
 }
 
-func (m *Call_Request) Reset()      { *m = Call_Request{} }
-func (*Call_Request) ProtoMessage() {}
+func (m *Call_Request) Reset()                    { *m = Call_Request{} }
+func (*Call_Request) ProtoMessage()               {}
+func (*Call_Request) Descriptor() ([]byte, []int) { return fileDescriptorScheduler, []int{1, 8} }
 
 func (m *Call_Request) GetRequests() []mesos.Request {
 	if m != nil {
@@ -839,6 +867,25 @@ func (m *Call_Request) GetRequests() []mesos.Request {
 }
 
 func init() {
+	proto.RegisterType((*Event)(nil), "mesos.scheduler.Event")
+	proto.RegisterType((*Event_Subscribed)(nil), "mesos.scheduler.Event.Subscribed")
+	proto.RegisterType((*Event_Offers)(nil), "mesos.scheduler.Event.Offers")
+	proto.RegisterType((*Event_Rescind)(nil), "mesos.scheduler.Event.Rescind")
+	proto.RegisterType((*Event_Update)(nil), "mesos.scheduler.Event.Update")
+	proto.RegisterType((*Event_Message)(nil), "mesos.scheduler.Event.Message")
+	proto.RegisterType((*Event_Failure)(nil), "mesos.scheduler.Event.Failure")
+	proto.RegisterType((*Event_Error)(nil), "mesos.scheduler.Event.Error")
+	proto.RegisterType((*Call)(nil), "mesos.scheduler.Call")
+	proto.RegisterType((*Call_Subscribe)(nil), "mesos.scheduler.Call.Subscribe")
+	proto.RegisterType((*Call_Accept)(nil), "mesos.scheduler.Call.Accept")
+	proto.RegisterType((*Call_Decline)(nil), "mesos.scheduler.Call.Decline")
+	proto.RegisterType((*Call_Kill)(nil), "mesos.scheduler.Call.Kill")
+	proto.RegisterType((*Call_Shutdown)(nil), "mesos.scheduler.Call.Shutdown")
+	proto.RegisterType((*Call_Acknowledge)(nil), "mesos.scheduler.Call.Acknowledge")
+	proto.RegisterType((*Call_Reconcile)(nil), "mesos.scheduler.Call.Reconcile")
+	proto.RegisterType((*Call_Reconcile_Task)(nil), "mesos.scheduler.Call.Reconcile.Task")
+	proto.RegisterType((*Call_Message)(nil), "mesos.scheduler.Call.Message")
+	proto.RegisterType((*Call_Request)(nil), "mesos.scheduler.Call.Request")
 	proto.RegisterEnum("mesos.scheduler.Event_Type", Event_Type_name, Event_Type_value)
 	proto.RegisterEnum("mesos.scheduler.Call_Type", Call_Type_name, Call_Type_value)
 }
@@ -866,7 +913,12 @@ func (this *Event) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Event)
 	if !ok {
-		return fmt.Errorf("that is not of type *Event")
+		that2, ok := that.(Event)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Event")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -874,7 +926,7 @@ func (this *Event) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Event but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Eventbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Event but is not nil && this == nil")
 	}
 	if this.Type != nil && that1.Type != nil {
 		if *this.Type != *that1.Type {
@@ -918,7 +970,12 @@ func (this *Event) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Event)
 	if !ok {
-		return false
+		that2, ok := that.(Event)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -970,7 +1027,12 @@ func (this *Event_Subscribed) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Event_Subscribed)
 	if !ok {
-		return fmt.Errorf("that is not of type *Event_Subscribed")
+		that2, ok := that.(Event_Subscribed)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Event_Subscribed")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -978,7 +1040,7 @@ func (this *Event_Subscribed) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Event_Subscribed but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Event_Subscribedbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Event_Subscribed but is not nil && this == nil")
 	}
 	if !this.FrameworkID.Equal(that1.FrameworkID) {
 		return fmt.Errorf("FrameworkID this(%v) Not Equal that(%v)", this.FrameworkID, that1.FrameworkID)
@@ -1004,7 +1066,12 @@ func (this *Event_Subscribed) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Event_Subscribed)
 	if !ok {
-		return false
+		that2, ok := that.(Event_Subscribed)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1038,7 +1105,12 @@ func (this *Event_Offers) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Event_Offers)
 	if !ok {
-		return fmt.Errorf("that is not of type *Event_Offers")
+		that2, ok := that.(Event_Offers)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Event_Offers")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1046,7 +1118,7 @@ func (this *Event_Offers) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Event_Offers but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Event_Offersbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Event_Offers but is not nil && this == nil")
 	}
 	if len(this.Offers) != len(that1.Offers) {
 		return fmt.Errorf("Offers this(%v) Not Equal that(%v)", len(this.Offers), len(that1.Offers))
@@ -1076,7 +1148,12 @@ func (this *Event_Offers) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Event_Offers)
 	if !ok {
-		return false
+		that2, ok := that.(Event_Offers)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1114,7 +1191,12 @@ func (this *Event_Rescind) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Event_Rescind)
 	if !ok {
-		return fmt.Errorf("that is not of type *Event_Rescind")
+		that2, ok := that.(Event_Rescind)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Event_Rescind")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1122,7 +1204,7 @@ func (this *Event_Rescind) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Event_Rescind but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Event_Rescindbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Event_Rescind but is not nil && this == nil")
 	}
 	if !this.OfferID.Equal(&that1.OfferID) {
 		return fmt.Errorf("OfferID this(%v) Not Equal that(%v)", this.OfferID, that1.OfferID)
@@ -1139,7 +1221,12 @@ func (this *Event_Rescind) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Event_Rescind)
 	if !ok {
-		return false
+		that2, ok := that.(Event_Rescind)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1164,7 +1251,12 @@ func (this *Event_Update) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Event_Update)
 	if !ok {
-		return fmt.Errorf("that is not of type *Event_Update")
+		that2, ok := that.(Event_Update)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Event_Update")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1172,7 +1264,7 @@ func (this *Event_Update) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Event_Update but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Event_Updatebut is not nil && this == nil")
+		return fmt.Errorf("that is type *Event_Update but is not nil && this == nil")
 	}
 	if !this.Status.Equal(&that1.Status) {
 		return fmt.Errorf("Status this(%v) Not Equal that(%v)", this.Status, that1.Status)
@@ -1189,7 +1281,12 @@ func (this *Event_Update) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Event_Update)
 	if !ok {
-		return false
+		that2, ok := that.(Event_Update)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1214,7 +1311,12 @@ func (this *Event_Message) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Event_Message)
 	if !ok {
-		return fmt.Errorf("that is not of type *Event_Message")
+		that2, ok := that.(Event_Message)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Event_Message")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1222,7 +1324,7 @@ func (this *Event_Message) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Event_Message but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Event_Messagebut is not nil && this == nil")
+		return fmt.Errorf("that is type *Event_Message but is not nil && this == nil")
 	}
 	if !this.AgentID.Equal(&that1.AgentID) {
 		return fmt.Errorf("AgentID this(%v) Not Equal that(%v)", this.AgentID, that1.AgentID)
@@ -1245,7 +1347,12 @@ func (this *Event_Message) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Event_Message)
 	if !ok {
-		return false
+		that2, ok := that.(Event_Message)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1276,7 +1383,12 @@ func (this *Event_Failure) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Event_Failure)
 	if !ok {
-		return fmt.Errorf("that is not of type *Event_Failure")
+		that2, ok := that.(Event_Failure)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Event_Failure")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1284,7 +1396,7 @@ func (this *Event_Failure) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Event_Failure but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Event_Failurebut is not nil && this == nil")
+		return fmt.Errorf("that is type *Event_Failure but is not nil && this == nil")
 	}
 	if !this.AgentID.Equal(that1.AgentID) {
 		return fmt.Errorf("AgentID this(%v) Not Equal that(%v)", this.AgentID, that1.AgentID)
@@ -1313,7 +1425,12 @@ func (this *Event_Failure) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Event_Failure)
 	if !ok {
-		return false
+		that2, ok := that.(Event_Failure)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1350,7 +1467,12 @@ func (this *Event_Error) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Event_Error)
 	if !ok {
-		return fmt.Errorf("that is not of type *Event_Error")
+		that2, ok := that.(Event_Error)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Event_Error")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1358,7 +1480,7 @@ func (this *Event_Error) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Event_Error but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Event_Errorbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Event_Error but is not nil && this == nil")
 	}
 	if this.Message != that1.Message {
 		return fmt.Errorf("Message this(%v) Not Equal that(%v)", this.Message, that1.Message)
@@ -1375,7 +1497,12 @@ func (this *Event_Error) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Event_Error)
 	if !ok {
-		return false
+		that2, ok := that.(Event_Error)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1400,7 +1527,12 @@ func (this *Call) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call")
+		that2, ok := that.(Call)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1408,7 +1540,7 @@ func (this *Call) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Callbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call but is not nil && this == nil")
 	}
 	if !this.FrameworkID.Equal(that1.FrameworkID) {
 		return fmt.Errorf("FrameworkID this(%v) Not Equal that(%v)", this.FrameworkID, that1.FrameworkID)
@@ -1461,7 +1593,12 @@ func (this *Call) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call)
 	if !ok {
-		return false
+		that2, ok := that.(Call)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1522,7 +1659,12 @@ func (this *Call_Subscribe) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Subscribe)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Subscribe")
+		that2, ok := that.(Call_Subscribe)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Subscribe")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1530,7 +1672,7 @@ func (this *Call_Subscribe) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Subscribe but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Subscribebut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Subscribe but is not nil && this == nil")
 	}
 	if !this.FrameworkInfo.Equal(that1.FrameworkInfo) {
 		return fmt.Errorf("FrameworkInfo this(%v) Not Equal that(%v)", this.FrameworkInfo, that1.FrameworkInfo)
@@ -1550,7 +1692,12 @@ func (this *Call_Subscribe) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Subscribe)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Subscribe)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1578,7 +1725,12 @@ func (this *Call_Accept) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Accept)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Accept")
+		that2, ok := that.(Call_Accept)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Accept")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1586,7 +1738,7 @@ func (this *Call_Accept) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Accept but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Acceptbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Accept but is not nil && this == nil")
 	}
 	if len(this.OfferIDs) != len(that1.OfferIDs) {
 		return fmt.Errorf("OfferIDs this(%v) Not Equal that(%v)", len(this.OfferIDs), len(that1.OfferIDs))
@@ -1619,7 +1771,12 @@ func (this *Call_Accept) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Accept)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Accept)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1660,7 +1817,12 @@ func (this *Call_Decline) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Decline)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Decline")
+		that2, ok := that.(Call_Decline)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Decline")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1668,7 +1830,7 @@ func (this *Call_Decline) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Decline but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Declinebut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Decline but is not nil && this == nil")
 	}
 	if len(this.OfferIDs) != len(that1.OfferIDs) {
 		return fmt.Errorf("OfferIDs this(%v) Not Equal that(%v)", len(this.OfferIDs), len(that1.OfferIDs))
@@ -1693,7 +1855,12 @@ func (this *Call_Decline) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Decline)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Decline)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1726,7 +1893,12 @@ func (this *Call_Kill) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Kill)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Kill")
+		that2, ok := that.(Call_Kill)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Kill")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1734,7 +1906,7 @@ func (this *Call_Kill) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Kill but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Killbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Kill but is not nil && this == nil")
 	}
 	if !this.TaskID.Equal(&that1.TaskID) {
 		return fmt.Errorf("TaskID this(%v) Not Equal that(%v)", this.TaskID, that1.TaskID)
@@ -1754,7 +1926,12 @@ func (this *Call_Kill) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Kill)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Kill)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1782,7 +1959,12 @@ func (this *Call_Shutdown) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Shutdown)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Shutdown")
+		that2, ok := that.(Call_Shutdown)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Shutdown")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1790,7 +1972,7 @@ func (this *Call_Shutdown) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Shutdown but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Shutdownbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Shutdown but is not nil && this == nil")
 	}
 	if !this.ExecutorID.Equal(&that1.ExecutorID) {
 		return fmt.Errorf("ExecutorID this(%v) Not Equal that(%v)", this.ExecutorID, that1.ExecutorID)
@@ -1810,7 +1992,12 @@ func (this *Call_Shutdown) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Shutdown)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Shutdown)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1838,7 +2025,12 @@ func (this *Call_Acknowledge) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Acknowledge)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Acknowledge")
+		that2, ok := that.(Call_Acknowledge)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Acknowledge")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1846,7 +2038,7 @@ func (this *Call_Acknowledge) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Acknowledge but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Acknowledgebut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Acknowledge but is not nil && this == nil")
 	}
 	if !this.AgentID.Equal(&that1.AgentID) {
 		return fmt.Errorf("AgentID this(%v) Not Equal that(%v)", this.AgentID, that1.AgentID)
@@ -1869,7 +2061,12 @@ func (this *Call_Acknowledge) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Acknowledge)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Acknowledge)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1900,7 +2097,12 @@ func (this *Call_Reconcile) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Reconcile)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Reconcile")
+		that2, ok := that.(Call_Reconcile)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Reconcile")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1908,7 +2110,7 @@ func (this *Call_Reconcile) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Reconcile but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Reconcilebut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Reconcile but is not nil && this == nil")
 	}
 	if len(this.Tasks) != len(that1.Tasks) {
 		return fmt.Errorf("Tasks this(%v) Not Equal that(%v)", len(this.Tasks), len(that1.Tasks))
@@ -1930,7 +2132,12 @@ func (this *Call_Reconcile) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Reconcile)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Reconcile)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1960,7 +2167,12 @@ func (this *Call_Reconcile_Task) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Reconcile_Task)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Reconcile_Task")
+		that2, ok := that.(Call_Reconcile_Task)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Reconcile_Task")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -1968,7 +2180,7 @@ func (this *Call_Reconcile_Task) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Reconcile_Task but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Reconcile_Taskbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Reconcile_Task but is not nil && this == nil")
 	}
 	if !this.TaskID.Equal(&that1.TaskID) {
 		return fmt.Errorf("TaskID this(%v) Not Equal that(%v)", this.TaskID, that1.TaskID)
@@ -1988,7 +2200,12 @@ func (this *Call_Reconcile_Task) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Reconcile_Task)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Reconcile_Task)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -2016,7 +2233,12 @@ func (this *Call_Message) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Message)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Message")
+		that2, ok := that.(Call_Message)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Message")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -2024,7 +2246,7 @@ func (this *Call_Message) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Message but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Messagebut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Message but is not nil && this == nil")
 	}
 	if !this.AgentID.Equal(&that1.AgentID) {
 		return fmt.Errorf("AgentID this(%v) Not Equal that(%v)", this.AgentID, that1.AgentID)
@@ -2047,7 +2269,12 @@ func (this *Call_Message) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Message)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Message)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -2078,7 +2305,12 @@ func (this *Call_Request) VerboseEqual(that interface{}) error {
 
 	that1, ok := that.(*Call_Request)
 	if !ok {
-		return fmt.Errorf("that is not of type *Call_Request")
+		that2, ok := that.(Call_Request)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Call_Request")
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -2086,7 +2318,7 @@ func (this *Call_Request) VerboseEqual(that interface{}) error {
 		}
 		return fmt.Errorf("that is type *Call_Request but is nil && this != nil")
 	} else if this == nil {
-		return fmt.Errorf("that is type *Call_Requestbut is not nil && this == nil")
+		return fmt.Errorf("that is type *Call_Request but is not nil && this == nil")
 	}
 	if len(this.Requests) != len(that1.Requests) {
 		return fmt.Errorf("Requests this(%v) Not Equal that(%v)", len(this.Requests), len(that1.Requests))
@@ -2108,7 +2340,12 @@ func (this *Call_Request) Equal(that interface{}) bool {
 
 	that1, ok := that.(*Call_Request)
 	if !ok {
-		return false
+		that2, ok := that.(Call_Request)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
 	}
 	if that1 == nil {
 		if this == nil {
@@ -2183,10 +2420,10 @@ func (this *Event_Offers) GoString() string {
 	s := make([]string, 0, 6)
 	s = append(s, "&scheduler.Event_Offers{")
 	if this.Offers != nil {
-		s = append(s, "Offers: "+strings.Replace(fmt.Sprintf("%#v", this.Offers), `&`, ``, 1)+",\n")
+		s = append(s, "Offers: "+fmt.Sprintf("%#v", this.Offers)+",\n")
 	}
 	if this.InverseOffers != nil {
-		s = append(s, "InverseOffers: "+strings.Replace(fmt.Sprintf("%#v", this.InverseOffers), `&`, ``, 1)+",\n")
+		s = append(s, "InverseOffers: "+fmt.Sprintf("%#v", this.InverseOffers)+",\n")
 	}
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -2315,10 +2552,10 @@ func (this *Call_Accept) GoString() string {
 	s := make([]string, 0, 7)
 	s = append(s, "&scheduler.Call_Accept{")
 	if this.OfferIDs != nil {
-		s = append(s, "OfferIDs: "+strings.Replace(fmt.Sprintf("%#v", this.OfferIDs), `&`, ``, 1)+",\n")
+		s = append(s, "OfferIDs: "+fmt.Sprintf("%#v", this.OfferIDs)+",\n")
 	}
 	if this.Operations != nil {
-		s = append(s, "Operations: "+strings.Replace(fmt.Sprintf("%#v", this.Operations), `&`, ``, 1)+",\n")
+		s = append(s, "Operations: "+fmt.Sprintf("%#v", this.Operations)+",\n")
 	}
 	if this.Filters != nil {
 		s = append(s, "Filters: "+fmt.Sprintf("%#v", this.Filters)+",\n")
@@ -2333,7 +2570,7 @@ func (this *Call_Decline) GoString() string {
 	s := make([]string, 0, 6)
 	s = append(s, "&scheduler.Call_Decline{")
 	if this.OfferIDs != nil {
-		s = append(s, "OfferIDs: "+strings.Replace(fmt.Sprintf("%#v", this.OfferIDs), `&`, ``, 1)+",\n")
+		s = append(s, "OfferIDs: "+fmt.Sprintf("%#v", this.OfferIDs)+",\n")
 	}
 	if this.Filters != nil {
 		s = append(s, "Filters: "+fmt.Sprintf("%#v", this.Filters)+",\n")
@@ -2386,7 +2623,7 @@ func (this *Call_Reconcile) GoString() string {
 	s := make([]string, 0, 5)
 	s = append(s, "&scheduler.Call_Reconcile{")
 	if this.Tasks != nil {
-		s = append(s, "Tasks: "+strings.Replace(fmt.Sprintf("%#v", this.Tasks), `&`, ``, 1)+",\n")
+		s = append(s, "Tasks: "+fmt.Sprintf("%#v", this.Tasks)+",\n")
 	}
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -2425,7 +2662,7 @@ func (this *Call_Request) GoString() string {
 	s := make([]string, 0, 5)
 	s = append(s, "&scheduler.Call_Request{")
 	if this.Requests != nil {
-		s = append(s, "Requests: "+strings.Replace(fmt.Sprintf("%#v", this.Requests), `&`, ``, 1)+",\n")
+		s = append(s, "Requests: "+fmt.Sprintf("%#v", this.Requests)+",\n")
 	}
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -2438,11 +2675,12 @@ func valueToGoStringScheduler(v interface{}, typ string) string {
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("func(v %v) *%v { return &v } ( %#v )", typ, typ, pv)
 }
-func extensionToGoStringScheduler(e map[int32]github_com_gogo_protobuf_proto.Extension) string {
+func extensionToGoStringScheduler(m github_com_gogo_protobuf_proto.Message) string {
+	e := github_com_gogo_protobuf_proto.GetUnsafeExtensionsMap(m)
 	if e == nil {
 		return "nil"
 	}
-	s := "map[int32]proto.Extension{"
+	s := "proto.NewUnsafeXXX_InternalExtensions(map[int32]proto.Extension{"
 	keys := make([]int, 0, len(e))
 	for k := range e {
 		keys = append(keys, int(k))
@@ -2452,20 +2690,20 @@ func extensionToGoStringScheduler(e map[int32]github_com_gogo_protobuf_proto.Ext
 	for _, k := range keys {
 		ss = append(ss, strconv.Itoa(k)+": "+e[int32(k)].GoString())
 	}
-	s += strings.Join(ss, ",") + "}"
+	s += strings.Join(ss, ",") + "})"
 	return s
 }
-func (m *Event) Marshal() (data []byte, err error) {
+func (m *Event) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Event) MarshalTo(data []byte) (int, error) {
+func (m *Event) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -2473,75 +2711,75 @@ func (m *Event) MarshalTo(data []byte) (int, error) {
 	if m.Type == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("type")
 	} else {
-		data[i] = 0x8
+		dAtA[i] = 0x8
 		i++
-		i = encodeVarintScheduler(data, i, uint64(*m.Type))
+		i = encodeVarintScheduler(dAtA, i, uint64(*m.Type))
 	}
 	if m.Subscribed != nil {
-		data[i] = 0x12
+		dAtA[i] = 0x12
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Subscribed.Size()))
-		n1, err := m.Subscribed.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Subscribed.Size()))
+		n1, err := m.Subscribed.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n1
 	}
 	if m.Offers != nil {
-		data[i] = 0x1a
+		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Offers.Size()))
-		n2, err := m.Offers.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Offers.Size()))
+		n2, err := m.Offers.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n2
 	}
 	if m.Rescind != nil {
-		data[i] = 0x22
+		dAtA[i] = 0x22
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Rescind.Size()))
-		n3, err := m.Rescind.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Rescind.Size()))
+		n3, err := m.Rescind.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n3
 	}
 	if m.Update != nil {
-		data[i] = 0x2a
+		dAtA[i] = 0x2a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Update.Size()))
-		n4, err := m.Update.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Update.Size()))
+		n4, err := m.Update.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n4
 	}
 	if m.Message != nil {
-		data[i] = 0x32
+		dAtA[i] = 0x32
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Message.Size()))
-		n5, err := m.Message.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Message.Size()))
+		n5, err := m.Message.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n5
 	}
 	if m.Failure != nil {
-		data[i] = 0x3a
+		dAtA[i] = 0x3a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Failure.Size()))
-		n6, err := m.Failure.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Failure.Size()))
+		n6, err := m.Failure.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n6
 	}
 	if m.Error != nil {
-		data[i] = 0x42
+		dAtA[i] = 0x42
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Error.Size()))
-		n7, err := m.Error.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Error.Size()))
+		n7, err := m.Error.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
@@ -2550,17 +2788,17 @@ func (m *Event) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Event_Subscribed) Marshal() (data []byte, err error) {
+func (m *Event_Subscribed) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Event_Subscribed) MarshalTo(data []byte) (int, error) {
+func (m *Event_Subscribed) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -2568,44 +2806,44 @@ func (m *Event_Subscribed) MarshalTo(data []byte) (int, error) {
 	if m.FrameworkID == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("framework_id")
 	} else {
-		data[i] = 0xa
+		dAtA[i] = 0xa
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.FrameworkID.Size()))
-		n8, err := m.FrameworkID.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.FrameworkID.Size()))
+		n8, err := m.FrameworkID.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n8
 	}
 	if m.HeartbeatIntervalSeconds != nil {
-		data[i] = 0x11
+		dAtA[i] = 0x11
 		i++
-		i = encodeFixed64Scheduler(data, i, uint64(math.Float64bits(*m.HeartbeatIntervalSeconds)))
+		i = encodeFixed64Scheduler(dAtA, i, uint64(math.Float64bits(float64(*m.HeartbeatIntervalSeconds))))
 	}
 	return i, nil
 }
 
-func (m *Event_Offers) Marshal() (data []byte, err error) {
+func (m *Event_Offers) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Event_Offers) MarshalTo(data []byte) (int, error) {
+func (m *Event_Offers) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
 	if len(m.Offers) > 0 {
 		for _, msg := range m.Offers {
-			data[i] = 0xa
+			dAtA[i] = 0xa
 			i++
-			i = encodeVarintScheduler(data, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(data[i:])
+			i = encodeVarintScheduler(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
 			if err != nil {
 				return 0, err
 			}
@@ -2614,10 +2852,10 @@ func (m *Event_Offers) MarshalTo(data []byte) (int, error) {
 	}
 	if len(m.InverseOffers) > 0 {
 		for _, msg := range m.InverseOffers {
-			data[i] = 0x12
+			dAtA[i] = 0x12
 			i++
-			i = encodeVarintScheduler(data, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(data[i:])
+			i = encodeVarintScheduler(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
 			if err != nil {
 				return 0, err
 			}
@@ -2627,25 +2865,25 @@ func (m *Event_Offers) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Event_Rescind) Marshal() (data []byte, err error) {
+func (m *Event_Rescind) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Event_Rescind) MarshalTo(data []byte) (int, error) {
+func (m *Event_Rescind) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.OfferID.Size()))
-	n9, err := m.OfferID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.OfferID.Size()))
+	n9, err := m.OfferID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
@@ -2653,25 +2891,25 @@ func (m *Event_Rescind) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Event_Update) Marshal() (data []byte, err error) {
+func (m *Event_Update) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Event_Update) MarshalTo(data []byte) (int, error) {
+func (m *Event_Update) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.Status.Size()))
-	n10, err := m.Status.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.Status.Size()))
+	n10, err := m.Status.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
@@ -2679,33 +2917,33 @@ func (m *Event_Update) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Event_Message) Marshal() (data []byte, err error) {
+func (m *Event_Message) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Event_Message) MarshalTo(data []byte) (int, error) {
+func (m *Event_Message) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.AgentID.Size()))
-	n11, err := m.AgentID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.AgentID.Size()))
+	n11, err := m.AgentID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
 	i += n11
-	data[i] = 0x12
+	dAtA[i] = 0x12
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.ExecutorID.Size()))
-	n12, err := m.ExecutorID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.ExecutorID.Size()))
+	n12, err := m.ExecutorID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
@@ -2713,99 +2951,99 @@ func (m *Event_Message) MarshalTo(data []byte) (int, error) {
 	if m.Data == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("data")
 	} else {
-		data[i] = 0x1a
+		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(len(m.Data)))
-		i += copy(data[i:], m.Data)
+		i = encodeVarintScheduler(dAtA, i, uint64(len(m.Data)))
+		i += copy(dAtA[i:], m.Data)
 	}
 	return i, nil
 }
 
-func (m *Event_Failure) Marshal() (data []byte, err error) {
+func (m *Event_Failure) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Event_Failure) MarshalTo(data []byte) (int, error) {
+func (m *Event_Failure) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
 	if m.AgentID != nil {
-		data[i] = 0xa
+		dAtA[i] = 0xa
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.AgentID.Size()))
-		n13, err := m.AgentID.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.AgentID.Size()))
+		n13, err := m.AgentID.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n13
 	}
 	if m.ExecutorID != nil {
-		data[i] = 0x12
+		dAtA[i] = 0x12
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.ExecutorID.Size()))
-		n14, err := m.ExecutorID.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.ExecutorID.Size()))
+		n14, err := m.ExecutorID.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n14
 	}
 	if m.Status != nil {
-		data[i] = 0x18
+		dAtA[i] = 0x18
 		i++
-		i = encodeVarintScheduler(data, i, uint64(*m.Status))
+		i = encodeVarintScheduler(dAtA, i, uint64(*m.Status))
 	}
 	return i, nil
 }
 
-func (m *Event_Error) Marshal() (data []byte, err error) {
+func (m *Event_Error) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Event_Error) MarshalTo(data []byte) (int, error) {
+func (m *Event_Error) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(len(m.Message)))
-	i += copy(data[i:], m.Message)
+	i = encodeVarintScheduler(dAtA, i, uint64(len(m.Message)))
+	i += copy(dAtA[i:], m.Message)
 	return i, nil
 }
 
-func (m *Call) Marshal() (data []byte, err error) {
+func (m *Call) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call) MarshalTo(data []byte) (int, error) {
+func (m *Call) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
 	if m.FrameworkID != nil {
-		data[i] = 0xa
+		dAtA[i] = 0xa
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.FrameworkID.Size()))
-		n15, err := m.FrameworkID.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.FrameworkID.Size()))
+		n15, err := m.FrameworkID.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
@@ -2814,95 +3052,95 @@ func (m *Call) MarshalTo(data []byte) (int, error) {
 	if m.Type == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("type")
 	} else {
-		data[i] = 0x10
+		dAtA[i] = 0x10
 		i++
-		i = encodeVarintScheduler(data, i, uint64(*m.Type))
+		i = encodeVarintScheduler(dAtA, i, uint64(*m.Type))
 	}
 	if m.Subscribe != nil {
-		data[i] = 0x1a
+		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Subscribe.Size()))
-		n16, err := m.Subscribe.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Subscribe.Size()))
+		n16, err := m.Subscribe.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n16
 	}
 	if m.Accept != nil {
-		data[i] = 0x22
+		dAtA[i] = 0x22
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Accept.Size()))
-		n17, err := m.Accept.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Accept.Size()))
+		n17, err := m.Accept.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n17
 	}
 	if m.Decline != nil {
-		data[i] = 0x2a
+		dAtA[i] = 0x2a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Decline.Size()))
-		n18, err := m.Decline.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Decline.Size()))
+		n18, err := m.Decline.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n18
 	}
 	if m.Kill != nil {
-		data[i] = 0x32
+		dAtA[i] = 0x32
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Kill.Size()))
-		n19, err := m.Kill.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Kill.Size()))
+		n19, err := m.Kill.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n19
 	}
 	if m.Shutdown != nil {
-		data[i] = 0x3a
+		dAtA[i] = 0x3a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Shutdown.Size()))
-		n20, err := m.Shutdown.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Shutdown.Size()))
+		n20, err := m.Shutdown.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n20
 	}
 	if m.Acknowledge != nil {
-		data[i] = 0x42
+		dAtA[i] = 0x42
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Acknowledge.Size()))
-		n21, err := m.Acknowledge.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Acknowledge.Size()))
+		n21, err := m.Acknowledge.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n21
 	}
 	if m.Reconcile != nil {
-		data[i] = 0x4a
+		dAtA[i] = 0x4a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Reconcile.Size()))
-		n22, err := m.Reconcile.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Reconcile.Size()))
+		n22, err := m.Reconcile.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n22
 	}
 	if m.Message != nil {
-		data[i] = 0x52
+		dAtA[i] = 0x52
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Message.Size()))
-		n23, err := m.Message.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Message.Size()))
+		n23, err := m.Message.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n23
 	}
 	if m.Request != nil {
-		data[i] = 0x5a
+		dAtA[i] = 0x5a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Request.Size()))
-		n24, err := m.Request.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Request.Size()))
+		n24, err := m.Request.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
@@ -2911,17 +3149,17 @@ func (m *Call) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Call_Subscribe) Marshal() (data []byte, err error) {
+func (m *Call_Subscribe) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Subscribe) MarshalTo(data []byte) (int, error) {
+func (m *Call_Subscribe) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -2929,47 +3167,47 @@ func (m *Call_Subscribe) MarshalTo(data []byte) (int, error) {
 	if m.FrameworkInfo == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("framework_info")
 	} else {
-		data[i] = 0xa
+		dAtA[i] = 0xa
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.FrameworkInfo.Size()))
-		n25, err := m.FrameworkInfo.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.FrameworkInfo.Size()))
+		n25, err := m.FrameworkInfo.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
 		i += n25
 	}
-	data[i] = 0x10
+	dAtA[i] = 0x10
 	i++
 	if m.Force {
-		data[i] = 1
+		dAtA[i] = 1
 	} else {
-		data[i] = 0
+		dAtA[i] = 0
 	}
 	i++
 	return i, nil
 }
 
-func (m *Call_Accept) Marshal() (data []byte, err error) {
+func (m *Call_Accept) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Accept) MarshalTo(data []byte) (int, error) {
+func (m *Call_Accept) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
 	if len(m.OfferIDs) > 0 {
 		for _, msg := range m.OfferIDs {
-			data[i] = 0xa
+			dAtA[i] = 0xa
 			i++
-			i = encodeVarintScheduler(data, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(data[i:])
+			i = encodeVarintScheduler(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
 			if err != nil {
 				return 0, err
 			}
@@ -2978,10 +3216,10 @@ func (m *Call_Accept) MarshalTo(data []byte) (int, error) {
 	}
 	if len(m.Operations) > 0 {
 		for _, msg := range m.Operations {
-			data[i] = 0x12
+			dAtA[i] = 0x12
 			i++
-			i = encodeVarintScheduler(data, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(data[i:])
+			i = encodeVarintScheduler(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
 			if err != nil {
 				return 0, err
 			}
@@ -2989,10 +3227,10 @@ func (m *Call_Accept) MarshalTo(data []byte) (int, error) {
 		}
 	}
 	if m.Filters != nil {
-		data[i] = 0x1a
+		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Filters.Size()))
-		n26, err := m.Filters.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Filters.Size()))
+		n26, err := m.Filters.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
@@ -3001,27 +3239,27 @@ func (m *Call_Accept) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Call_Decline) Marshal() (data []byte, err error) {
+func (m *Call_Decline) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Decline) MarshalTo(data []byte) (int, error) {
+func (m *Call_Decline) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
 	if len(m.OfferIDs) > 0 {
 		for _, msg := range m.OfferIDs {
-			data[i] = 0xa
+			dAtA[i] = 0xa
 			i++
-			i = encodeVarintScheduler(data, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(data[i:])
+			i = encodeVarintScheduler(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
 			if err != nil {
 				return 0, err
 			}
@@ -3029,10 +3267,10 @@ func (m *Call_Decline) MarshalTo(data []byte) (int, error) {
 		}
 	}
 	if m.Filters != nil {
-		data[i] = 0x12
+		dAtA[i] = 0x12
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.Filters.Size()))
-		n27, err := m.Filters.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.Filters.Size()))
+		n27, err := m.Filters.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
@@ -3041,34 +3279,34 @@ func (m *Call_Decline) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Call_Kill) Marshal() (data []byte, err error) {
+func (m *Call_Kill) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Kill) MarshalTo(data []byte) (int, error) {
+func (m *Call_Kill) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.TaskID.Size()))
-	n28, err := m.TaskID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.TaskID.Size()))
+	n28, err := m.TaskID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
 	i += n28
 	if m.AgentID != nil {
-		data[i] = 0x12
+		dAtA[i] = 0x12
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.AgentID.Size()))
-		n29, err := m.AgentID.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.AgentID.Size()))
+		n29, err := m.AgentID.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
@@ -3077,33 +3315,33 @@ func (m *Call_Kill) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Call_Shutdown) Marshal() (data []byte, err error) {
+func (m *Call_Shutdown) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Shutdown) MarshalTo(data []byte) (int, error) {
+func (m *Call_Shutdown) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.ExecutorID.Size()))
-	n30, err := m.ExecutorID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.ExecutorID.Size()))
+	n30, err := m.ExecutorID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
 	i += n30
-	data[i] = 0x12
+	dAtA[i] = 0x12
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.AgentID.Size()))
-	n31, err := m.AgentID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.AgentID.Size()))
+	n31, err := m.AgentID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
@@ -3111,33 +3349,33 @@ func (m *Call_Shutdown) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Call_Acknowledge) Marshal() (data []byte, err error) {
+func (m *Call_Acknowledge) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Acknowledge) MarshalTo(data []byte) (int, error) {
+func (m *Call_Acknowledge) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.AgentID.Size()))
-	n32, err := m.AgentID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.AgentID.Size()))
+	n32, err := m.AgentID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
 	i += n32
-	data[i] = 0x12
+	dAtA[i] = 0x12
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.TaskID.Size()))
-	n33, err := m.TaskID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.TaskID.Size()))
+	n33, err := m.TaskID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
@@ -3145,35 +3383,35 @@ func (m *Call_Acknowledge) MarshalTo(data []byte) (int, error) {
 	if m.UUID == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("uuid")
 	} else {
-		data[i] = 0x1a
+		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(len(m.UUID)))
-		i += copy(data[i:], m.UUID)
+		i = encodeVarintScheduler(dAtA, i, uint64(len(m.UUID)))
+		i += copy(dAtA[i:], m.UUID)
 	}
 	return i, nil
 }
 
-func (m *Call_Reconcile) Marshal() (data []byte, err error) {
+func (m *Call_Reconcile) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Reconcile) MarshalTo(data []byte) (int, error) {
+func (m *Call_Reconcile) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
 	if len(m.Tasks) > 0 {
 		for _, msg := range m.Tasks {
-			data[i] = 0xa
+			dAtA[i] = 0xa
 			i++
-			i = encodeVarintScheduler(data, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(data[i:])
+			i = encodeVarintScheduler(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
 			if err != nil {
 				return 0, err
 			}
@@ -3183,34 +3421,34 @@ func (m *Call_Reconcile) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Call_Reconcile_Task) Marshal() (data []byte, err error) {
+func (m *Call_Reconcile_Task) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Reconcile_Task) MarshalTo(data []byte) (int, error) {
+func (m *Call_Reconcile_Task) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.TaskID.Size()))
-	n34, err := m.TaskID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.TaskID.Size()))
+	n34, err := m.TaskID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
 	i += n34
 	if m.AgentID != nil {
-		data[i] = 0x12
+		dAtA[i] = 0x12
 		i++
-		i = encodeVarintScheduler(data, i, uint64(m.AgentID.Size()))
-		n35, err := m.AgentID.MarshalTo(data[i:])
+		i = encodeVarintScheduler(dAtA, i, uint64(m.AgentID.Size()))
+		n35, err := m.AgentID.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
@@ -3219,33 +3457,33 @@ func (m *Call_Reconcile_Task) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func (m *Call_Message) Marshal() (data []byte, err error) {
+func (m *Call_Message) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Message) MarshalTo(data []byte) (int, error) {
+func (m *Call_Message) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	data[i] = 0xa
+	dAtA[i] = 0xa
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.AgentID.Size()))
-	n36, err := m.AgentID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.AgentID.Size()))
+	n36, err := m.AgentID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
 	i += n36
-	data[i] = 0x12
+	dAtA[i] = 0x12
 	i++
-	i = encodeVarintScheduler(data, i, uint64(m.ExecutorID.Size()))
-	n37, err := m.ExecutorID.MarshalTo(data[i:])
+	i = encodeVarintScheduler(dAtA, i, uint64(m.ExecutorID.Size()))
+	n37, err := m.ExecutorID.MarshalTo(dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
@@ -3253,35 +3491,35 @@ func (m *Call_Message) MarshalTo(data []byte) (int, error) {
 	if m.Data == nil {
 		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("data")
 	} else {
-		data[i] = 0x1a
+		dAtA[i] = 0x1a
 		i++
-		i = encodeVarintScheduler(data, i, uint64(len(m.Data)))
-		i += copy(data[i:], m.Data)
+		i = encodeVarintScheduler(dAtA, i, uint64(len(m.Data)))
+		i += copy(dAtA[i:], m.Data)
 	}
 	return i, nil
 }
 
-func (m *Call_Request) Marshal() (data []byte, err error) {
+func (m *Call_Request) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
-	data = make([]byte, size)
-	n, err := m.MarshalTo(data)
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
 	if err != nil {
 		return nil, err
 	}
-	return data[:n], nil
+	return dAtA[:n], nil
 }
 
-func (m *Call_Request) MarshalTo(data []byte) (int, error) {
+func (m *Call_Request) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
 	if len(m.Requests) > 0 {
 		for _, msg := range m.Requests {
-			data[i] = 0xa
+			dAtA[i] = 0xa
 			i++
-			i = encodeVarintScheduler(data, i, uint64(msg.Size()))
-			n, err := msg.MarshalTo(data[i:])
+			i = encodeVarintScheduler(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
 			if err != nil {
 				return 0, err
 			}
@@ -3291,31 +3529,31 @@ func (m *Call_Request) MarshalTo(data []byte) (int, error) {
 	return i, nil
 }
 
-func encodeFixed64Scheduler(data []byte, offset int, v uint64) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
-	data[offset+4] = uint8(v >> 32)
-	data[offset+5] = uint8(v >> 40)
-	data[offset+6] = uint8(v >> 48)
-	data[offset+7] = uint8(v >> 56)
+func encodeFixed64Scheduler(dAtA []byte, offset int, v uint64) int {
+	dAtA[offset] = uint8(v)
+	dAtA[offset+1] = uint8(v >> 8)
+	dAtA[offset+2] = uint8(v >> 16)
+	dAtA[offset+3] = uint8(v >> 24)
+	dAtA[offset+4] = uint8(v >> 32)
+	dAtA[offset+5] = uint8(v >> 40)
+	dAtA[offset+6] = uint8(v >> 48)
+	dAtA[offset+7] = uint8(v >> 56)
 	return offset + 8
 }
-func encodeFixed32Scheduler(data []byte, offset int, v uint32) int {
-	data[offset] = uint8(v)
-	data[offset+1] = uint8(v >> 8)
-	data[offset+2] = uint8(v >> 16)
-	data[offset+3] = uint8(v >> 24)
+func encodeFixed32Scheduler(dAtA []byte, offset int, v uint32) int {
+	dAtA[offset] = uint8(v)
+	dAtA[offset+1] = uint8(v >> 8)
+	dAtA[offset+2] = uint8(v >> 16)
+	dAtA[offset+3] = uint8(v >> 24)
 	return offset + 4
 }
-func encodeVarintScheduler(data []byte, offset int, v uint64) int {
+func encodeVarintScheduler(dAtA []byte, offset int, v uint64) int {
 	for v >= 1<<7 {
-		data[offset] = uint8(v&0x7f | 0x80)
+		dAtA[offset] = uint8(v&0x7f | 0x80)
 		v >>= 7
 		offset++
 	}
-	data[offset] = uint8(v)
+	dAtA[offset] = uint8(v)
 	return offset + 1
 }
 func NewPopulatedEvent(r randyScheduler, easy bool) *Event {
@@ -3366,7 +3604,7 @@ func NewPopulatedEvent_Subscribed(r randyScheduler, easy bool) *Event_Subscribed
 func NewPopulatedEvent_Offers(r randyScheduler, easy bool) *Event_Offers {
 	this := &Event_Offers{}
 	if r.Intn(10) != 0 {
-		v3 := r.Intn(10)
+		v3 := r.Intn(5)
 		this.Offers = make([]mesos.Offer, v3)
 		for i := 0; i < v3; i++ {
 			v4 := mesos.NewPopulatedOffer(r, easy)
@@ -3374,7 +3612,7 @@ func NewPopulatedEvent_Offers(r randyScheduler, easy bool) *Event_Offers {
 		}
 	}
 	if r.Intn(10) != 0 {
-		v5 := r.Intn(10)
+		v5 := r.Intn(5)
 		this.InverseOffers = make([]mesos.InverseOffer, v5)
 		for i := 0; i < v5; i++ {
 			v6 := mesos.NewPopulatedInverseOffer(r, easy)
@@ -3442,7 +3680,7 @@ func NewPopulatedEvent_Failure(r randyScheduler, easy bool) *Event_Failure {
 
 func NewPopulatedEvent_Error(r randyScheduler, easy bool) *Event_Error {
 	this := &Event_Error{}
-	this.Message = randStringScheduler(r)
+	this.Message = string(randStringScheduler(r))
 	if !easy && r.Intn(10) != 0 {
 	}
 	return this
@@ -3499,7 +3737,7 @@ func NewPopulatedCall_Subscribe(r randyScheduler, easy bool) *Call_Subscribe {
 func NewPopulatedCall_Accept(r randyScheduler, easy bool) *Call_Accept {
 	this := &Call_Accept{}
 	if r.Intn(10) != 0 {
-		v14 := r.Intn(10)
+		v14 := r.Intn(5)
 		this.OfferIDs = make([]mesos.OfferID, v14)
 		for i := 0; i < v14; i++ {
 			v15 := mesos.NewPopulatedOfferID(r, easy)
@@ -3507,7 +3745,7 @@ func NewPopulatedCall_Accept(r randyScheduler, easy bool) *Call_Accept {
 		}
 	}
 	if r.Intn(10) != 0 {
-		v16 := r.Intn(10)
+		v16 := r.Intn(5)
 		this.Operations = make([]mesos.Offer_Operation, v16)
 		for i := 0; i < v16; i++ {
 			v17 := mesos.NewPopulatedOffer_Operation(r, easy)
@@ -3525,7 +3763,7 @@ func NewPopulatedCall_Accept(r randyScheduler, easy bool) *Call_Accept {
 func NewPopulatedCall_Decline(r randyScheduler, easy bool) *Call_Decline {
 	this := &Call_Decline{}
 	if r.Intn(10) != 0 {
-		v18 := r.Intn(10)
+		v18 := r.Intn(5)
 		this.OfferIDs = make([]mesos.OfferID, v18)
 		for i := 0; i < v18; i++ {
 			v19 := mesos.NewPopulatedOfferID(r, easy)
@@ -3582,7 +3820,7 @@ func NewPopulatedCall_Acknowledge(r randyScheduler, easy bool) *Call_Acknowledge
 func NewPopulatedCall_Reconcile(r randyScheduler, easy bool) *Call_Reconcile {
 	this := &Call_Reconcile{}
 	if r.Intn(10) != 0 {
-		v26 := r.Intn(10)
+		v26 := r.Intn(5)
 		this.Tasks = make([]Call_Reconcile_Task, v26)
 		for i := 0; i < v26; i++ {
 			v27 := NewPopulatedCall_Reconcile_Task(r, easy)
@@ -3625,7 +3863,7 @@ func NewPopulatedCall_Message(r randyScheduler, easy bool) *Call_Message {
 func NewPopulatedCall_Request(r randyScheduler, easy bool) *Call_Request {
 	this := &Call_Request{}
 	if r.Intn(10) != 0 {
-		v32 := r.Intn(10)
+		v32 := r.Intn(5)
 		this.Requests = make([]mesos.Request, v32)
 		for i := 0; i < v32; i++ {
 			v33 := mesos.NewPopulatedRequest(r, easy)
@@ -3663,7 +3901,7 @@ func randStringScheduler(r randyScheduler) string {
 	}
 	return string(tmps)
 }
-func randUnrecognizedScheduler(r randyScheduler, maxFieldNumber int) (data []byte) {
+func randUnrecognizedScheduler(r randyScheduler, maxFieldNumber int) (dAtA []byte) {
 	l := r.Intn(5)
 	for i := 0; i < l; i++ {
 		wire := r.Intn(4)
@@ -3671,43 +3909,43 @@ func randUnrecognizedScheduler(r randyScheduler, maxFieldNumber int) (data []byt
 			wire = 5
 		}
 		fieldNumber := maxFieldNumber + r.Intn(100)
-		data = randFieldScheduler(data, r, fieldNumber, wire)
+		dAtA = randFieldScheduler(dAtA, r, fieldNumber, wire)
 	}
-	return data
+	return dAtA
 }
-func randFieldScheduler(data []byte, r randyScheduler, fieldNumber int, wire int) []byte {
+func randFieldScheduler(dAtA []byte, r randyScheduler, fieldNumber int, wire int) []byte {
 	key := uint32(fieldNumber)<<3 | uint32(wire)
 	switch wire {
 	case 0:
-		data = encodeVarintPopulateScheduler(data, uint64(key))
+		dAtA = encodeVarintPopulateScheduler(dAtA, uint64(key))
 		v35 := r.Int63()
 		if r.Intn(2) == 0 {
 			v35 *= -1
 		}
-		data = encodeVarintPopulateScheduler(data, uint64(v35))
+		dAtA = encodeVarintPopulateScheduler(dAtA, uint64(v35))
 	case 1:
-		data = encodeVarintPopulateScheduler(data, uint64(key))
-		data = append(data, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
+		dAtA = encodeVarintPopulateScheduler(dAtA, uint64(key))
+		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
 	case 2:
-		data = encodeVarintPopulateScheduler(data, uint64(key))
+		dAtA = encodeVarintPopulateScheduler(dAtA, uint64(key))
 		ll := r.Intn(100)
-		data = encodeVarintPopulateScheduler(data, uint64(ll))
+		dAtA = encodeVarintPopulateScheduler(dAtA, uint64(ll))
 		for j := 0; j < ll; j++ {
-			data = append(data, byte(r.Intn(256)))
+			dAtA = append(dAtA, byte(r.Intn(256)))
 		}
 	default:
-		data = encodeVarintPopulateScheduler(data, uint64(key))
-		data = append(data, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
+		dAtA = encodeVarintPopulateScheduler(dAtA, uint64(key))
+		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
 	}
-	return data
+	return dAtA
 }
-func encodeVarintPopulateScheduler(data []byte, v uint64) []byte {
+func encodeVarintPopulateScheduler(dAtA []byte, v uint64) []byte {
 	for v >= 1<<7 {
-		data = append(data, uint8(uint64(v)&0x7f|0x80))
+		dAtA = append(dAtA, uint8(uint64(v)&0x7f|0x80))
 		v >>= 7
 	}
-	data = append(data, uint8(v))
-	return data
+	dAtA = append(dAtA, uint8(v))
+	return dAtA
 }
 func (m *Event) Size() (n int) {
 	var l int
@@ -4261,9 +4499,9 @@ func valueToStringScheduler(v interface{}) string {
 	pv := reflect.Indirect(rv).Interface()
 	return fmt.Sprintf("*%v", pv)
 }
-func (m *Event) Unmarshal(data []byte) error {
+func (m *Event) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -4275,7 +4513,7 @@ func (m *Event) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -4303,7 +4541,7 @@ func (m *Event) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				v |= (Event_Type(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4324,7 +4562,7 @@ func (m *Event) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4341,7 +4579,7 @@ func (m *Event) Unmarshal(data []byte) error {
 			if m.Subscribed == nil {
 				m.Subscribed = &Event_Subscribed{}
 			}
-			if err := m.Subscribed.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Subscribed.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4357,7 +4595,7 @@ func (m *Event) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4374,7 +4612,7 @@ func (m *Event) Unmarshal(data []byte) error {
 			if m.Offers == nil {
 				m.Offers = &Event_Offers{}
 			}
-			if err := m.Offers.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Offers.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4390,7 +4628,7 @@ func (m *Event) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4407,7 +4645,7 @@ func (m *Event) Unmarshal(data []byte) error {
 			if m.Rescind == nil {
 				m.Rescind = &Event_Rescind{}
 			}
-			if err := m.Rescind.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Rescind.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4423,7 +4661,7 @@ func (m *Event) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4440,7 +4678,7 @@ func (m *Event) Unmarshal(data []byte) error {
 			if m.Update == nil {
 				m.Update = &Event_Update{}
 			}
-			if err := m.Update.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Update.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4456,7 +4694,7 @@ func (m *Event) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4473,7 +4711,7 @@ func (m *Event) Unmarshal(data []byte) error {
 			if m.Message == nil {
 				m.Message = &Event_Message{}
 			}
-			if err := m.Message.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Message.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4489,7 +4727,7 @@ func (m *Event) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4506,7 +4744,7 @@ func (m *Event) Unmarshal(data []byte) error {
 			if m.Failure == nil {
 				m.Failure = &Event_Failure{}
 			}
-			if err := m.Failure.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Failure.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4522,7 +4760,7 @@ func (m *Event) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4539,13 +4777,13 @@ func (m *Event) Unmarshal(data []byte) error {
 			if m.Error == nil {
 				m.Error = &Event_Error{}
 			}
-			if err := m.Error.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Error.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -4567,9 +4805,9 @@ func (m *Event) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Event_Subscribed) Unmarshal(data []byte) error {
+func (m *Event_Subscribed) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -4581,7 +4819,7 @@ func (m *Event_Subscribed) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -4609,7 +4847,7 @@ func (m *Event_Subscribed) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4626,7 +4864,7 @@ func (m *Event_Subscribed) Unmarshal(data []byte) error {
 			if m.FrameworkID == nil {
 				m.FrameworkID = &mesos.FrameworkID{}
 			}
-			if err := m.FrameworkID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.FrameworkID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4640,19 +4878,19 @@ func (m *Event_Subscribed) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			iNdEx += 8
-			v = uint64(data[iNdEx-8])
-			v |= uint64(data[iNdEx-7]) << 8
-			v |= uint64(data[iNdEx-6]) << 16
-			v |= uint64(data[iNdEx-5]) << 24
-			v |= uint64(data[iNdEx-4]) << 32
-			v |= uint64(data[iNdEx-3]) << 40
-			v |= uint64(data[iNdEx-2]) << 48
-			v |= uint64(data[iNdEx-1]) << 56
+			v = uint64(dAtA[iNdEx-8])
+			v |= uint64(dAtA[iNdEx-7]) << 8
+			v |= uint64(dAtA[iNdEx-6]) << 16
+			v |= uint64(dAtA[iNdEx-5]) << 24
+			v |= uint64(dAtA[iNdEx-4]) << 32
+			v |= uint64(dAtA[iNdEx-3]) << 40
+			v |= uint64(dAtA[iNdEx-2]) << 48
+			v |= uint64(dAtA[iNdEx-1]) << 56
 			v2 := float64(math.Float64frombits(v))
 			m.HeartbeatIntervalSeconds = &v2
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -4674,8 +4912,8 @@ func (m *Event_Subscribed) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Event_Offers) Unmarshal(data []byte) error {
-	l := len(data)
+func (m *Event_Offers) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -4687,7 +4925,7 @@ func (m *Event_Offers) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -4715,7 +4953,7 @@ func (m *Event_Offers) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4730,7 +4968,7 @@ func (m *Event_Offers) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Offers = append(m.Offers, mesos.Offer{})
-			if err := m.Offers[len(m.Offers)-1].Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Offers[len(m.Offers)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -4746,7 +4984,7 @@ func (m *Event_Offers) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4761,13 +4999,13 @@ func (m *Event_Offers) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.InverseOffers = append(m.InverseOffers, mesos.InverseOffer{})
-			if err := m.InverseOffers[len(m.InverseOffers)-1].Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.InverseOffers[len(m.InverseOffers)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -4786,9 +5024,9 @@ func (m *Event_Offers) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Event_Rescind) Unmarshal(data []byte) error {
+func (m *Event_Rescind) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -4800,7 +5038,7 @@ func (m *Event_Rescind) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -4828,7 +5066,7 @@ func (m *Event_Rescind) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4842,14 +5080,14 @@ func (m *Event_Rescind) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.OfferID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.OfferID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000001)
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -4871,9 +5109,9 @@ func (m *Event_Rescind) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Event_Update) Unmarshal(data []byte) error {
+func (m *Event_Update) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -4885,7 +5123,7 @@ func (m *Event_Update) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -4913,7 +5151,7 @@ func (m *Event_Update) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -4927,14 +5165,14 @@ func (m *Event_Update) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Status.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Status.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000001)
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -4956,9 +5194,9 @@ func (m *Event_Update) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Event_Message) Unmarshal(data []byte) error {
+func (m *Event_Message) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -4970,7 +5208,7 @@ func (m *Event_Message) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -4998,7 +5236,7 @@ func (m *Event_Message) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5012,7 +5250,7 @@ func (m *Event_Message) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.AgentID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.AgentID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5029,7 +5267,7 @@ func (m *Event_Message) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5043,7 +5281,7 @@ func (m *Event_Message) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.ExecutorID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.ExecutorID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5060,7 +5298,7 @@ func (m *Event_Message) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				byteLen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5074,12 +5312,15 @@ func (m *Event_Message) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Data = append([]byte{}, data[iNdEx:postIndex]...)
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
+			}
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000004)
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -5107,8 +5348,8 @@ func (m *Event_Message) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Event_Failure) Unmarshal(data []byte) error {
-	l := len(data)
+func (m *Event_Failure) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -5120,7 +5361,7 @@ func (m *Event_Failure) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -5148,7 +5389,7 @@ func (m *Event_Failure) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5165,7 +5406,7 @@ func (m *Event_Failure) Unmarshal(data []byte) error {
 			if m.AgentID == nil {
 				m.AgentID = &mesos.AgentID{}
 			}
-			if err := m.AgentID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.AgentID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5181,7 +5422,7 @@ func (m *Event_Failure) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5198,7 +5439,7 @@ func (m *Event_Failure) Unmarshal(data []byte) error {
 			if m.ExecutorID == nil {
 				m.ExecutorID = &mesos.ExecutorID{}
 			}
-			if err := m.ExecutorID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.ExecutorID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5214,7 +5455,7 @@ func (m *Event_Failure) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				v |= (int32(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5224,7 +5465,7 @@ func (m *Event_Failure) Unmarshal(data []byte) error {
 			m.Status = &v
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -5243,9 +5484,9 @@ func (m *Event_Failure) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Event_Error) Unmarshal(data []byte) error {
+func (m *Event_Error) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -5257,7 +5498,7 @@ func (m *Event_Error) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -5285,7 +5526,7 @@ func (m *Event_Error) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				stringLen |= (uint64(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5300,12 +5541,12 @@ func (m *Event_Error) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Message = string(data[iNdEx:postIndex])
+			m.Message = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000001)
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -5327,9 +5568,9 @@ func (m *Event_Error) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call) Unmarshal(data []byte) error {
+func (m *Call) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -5341,7 +5582,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -5369,7 +5610,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5386,7 +5627,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.FrameworkID == nil {
 				m.FrameworkID = &mesos.FrameworkID{}
 			}
-			if err := m.FrameworkID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.FrameworkID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5402,7 +5643,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				v |= (Call_Type(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5423,7 +5664,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5440,7 +5681,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Subscribe == nil {
 				m.Subscribe = &Call_Subscribe{}
 			}
-			if err := m.Subscribe.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Subscribe.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5456,7 +5697,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5473,7 +5714,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Accept == nil {
 				m.Accept = &Call_Accept{}
 			}
-			if err := m.Accept.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Accept.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5489,7 +5730,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5506,7 +5747,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Decline == nil {
 				m.Decline = &Call_Decline{}
 			}
-			if err := m.Decline.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Decline.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5522,7 +5763,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5539,7 +5780,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Kill == nil {
 				m.Kill = &Call_Kill{}
 			}
-			if err := m.Kill.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Kill.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5555,7 +5796,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5572,7 +5813,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Shutdown == nil {
 				m.Shutdown = &Call_Shutdown{}
 			}
-			if err := m.Shutdown.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Shutdown.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5588,7 +5829,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5605,7 +5846,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Acknowledge == nil {
 				m.Acknowledge = &Call_Acknowledge{}
 			}
-			if err := m.Acknowledge.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Acknowledge.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5621,7 +5862,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5638,7 +5879,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Reconcile == nil {
 				m.Reconcile = &Call_Reconcile{}
 			}
-			if err := m.Reconcile.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Reconcile.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5654,7 +5895,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5671,7 +5912,7 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Message == nil {
 				m.Message = &Call_Message{}
 			}
-			if err := m.Message.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Message.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5687,7 +5928,7 @@ func (m *Call) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5704,13 +5945,13 @@ func (m *Call) Unmarshal(data []byte) error {
 			if m.Request == nil {
 				m.Request = &Call_Request{}
 			}
-			if err := m.Request.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Request.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -5732,9 +5973,9 @@ func (m *Call) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Subscribe) Unmarshal(data []byte) error {
+func (m *Call_Subscribe) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -5746,7 +5987,7 @@ func (m *Call_Subscribe) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -5774,7 +6015,7 @@ func (m *Call_Subscribe) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5791,7 +6032,7 @@ func (m *Call_Subscribe) Unmarshal(data []byte) error {
 			if m.FrameworkInfo == nil {
 				m.FrameworkInfo = &mesos.FrameworkInfo{}
 			}
-			if err := m.FrameworkInfo.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.FrameworkInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5808,7 +6049,7 @@ func (m *Call_Subscribe) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				v |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5818,7 +6059,7 @@ func (m *Call_Subscribe) Unmarshal(data []byte) error {
 			m.Force = bool(v != 0)
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -5840,8 +6081,8 @@ func (m *Call_Subscribe) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Accept) Unmarshal(data []byte) error {
-	l := len(data)
+func (m *Call_Accept) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -5853,7 +6094,7 @@ func (m *Call_Accept) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -5881,7 +6122,7 @@ func (m *Call_Accept) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5896,7 +6137,7 @@ func (m *Call_Accept) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.OfferIDs = append(m.OfferIDs, mesos.OfferID{})
-			if err := m.OfferIDs[len(m.OfferIDs)-1].Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.OfferIDs[len(m.OfferIDs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5912,7 +6153,7 @@ func (m *Call_Accept) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5927,7 +6168,7 @@ func (m *Call_Accept) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Operations = append(m.Operations, mesos.Offer_Operation{})
-			if err := m.Operations[len(m.Operations)-1].Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Operations[len(m.Operations)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -5943,7 +6184,7 @@ func (m *Call_Accept) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -5960,13 +6201,13 @@ func (m *Call_Accept) Unmarshal(data []byte) error {
 			if m.Filters == nil {
 				m.Filters = &mesos.Filters{}
 			}
-			if err := m.Filters.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Filters.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -5985,8 +6226,8 @@ func (m *Call_Accept) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Decline) Unmarshal(data []byte) error {
-	l := len(data)
+func (m *Call_Decline) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -5998,7 +6239,7 @@ func (m *Call_Decline) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6026,7 +6267,7 @@ func (m *Call_Decline) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6041,7 +6282,7 @@ func (m *Call_Decline) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.OfferIDs = append(m.OfferIDs, mesos.OfferID{})
-			if err := m.OfferIDs[len(m.OfferIDs)-1].Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.OfferIDs[len(m.OfferIDs)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6057,7 +6298,7 @@ func (m *Call_Decline) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6074,13 +6315,13 @@ func (m *Call_Decline) Unmarshal(data []byte) error {
 			if m.Filters == nil {
 				m.Filters = &mesos.Filters{}
 			}
-			if err := m.Filters.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Filters.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -6099,9 +6340,9 @@ func (m *Call_Decline) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Kill) Unmarshal(data []byte) error {
+func (m *Call_Kill) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -6113,7 +6354,7 @@ func (m *Call_Kill) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6141,7 +6382,7 @@ func (m *Call_Kill) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6155,7 +6396,7 @@ func (m *Call_Kill) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.TaskID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.TaskID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6172,7 +6413,7 @@ func (m *Call_Kill) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6189,13 +6430,13 @@ func (m *Call_Kill) Unmarshal(data []byte) error {
 			if m.AgentID == nil {
 				m.AgentID = &mesos.AgentID{}
 			}
-			if err := m.AgentID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.AgentID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -6217,9 +6458,9 @@ func (m *Call_Kill) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Shutdown) Unmarshal(data []byte) error {
+func (m *Call_Shutdown) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -6231,7 +6472,7 @@ func (m *Call_Shutdown) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6259,7 +6500,7 @@ func (m *Call_Shutdown) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6273,7 +6514,7 @@ func (m *Call_Shutdown) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.ExecutorID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.ExecutorID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6290,7 +6531,7 @@ func (m *Call_Shutdown) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6304,14 +6545,14 @@ func (m *Call_Shutdown) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.AgentID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.AgentID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000002)
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -6336,9 +6577,9 @@ func (m *Call_Shutdown) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Acknowledge) Unmarshal(data []byte) error {
+func (m *Call_Acknowledge) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -6350,7 +6591,7 @@ func (m *Call_Acknowledge) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6378,7 +6619,7 @@ func (m *Call_Acknowledge) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6392,7 +6633,7 @@ func (m *Call_Acknowledge) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.AgentID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.AgentID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6409,7 +6650,7 @@ func (m *Call_Acknowledge) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6423,7 +6664,7 @@ func (m *Call_Acknowledge) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.TaskID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.TaskID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6440,7 +6681,7 @@ func (m *Call_Acknowledge) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				byteLen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6454,12 +6695,15 @@ func (m *Call_Acknowledge) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.UUID = append([]byte{}, data[iNdEx:postIndex]...)
+			m.UUID = append(m.UUID[:0], dAtA[iNdEx:postIndex]...)
+			if m.UUID == nil {
+				m.UUID = []byte{}
+			}
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000004)
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -6487,8 +6731,8 @@ func (m *Call_Acknowledge) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Reconcile) Unmarshal(data []byte) error {
-	l := len(data)
+func (m *Call_Reconcile) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -6500,7 +6744,7 @@ func (m *Call_Reconcile) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6528,7 +6772,7 @@ func (m *Call_Reconcile) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6543,13 +6787,13 @@ func (m *Call_Reconcile) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Tasks = append(m.Tasks, Call_Reconcile_Task{})
-			if err := m.Tasks[len(m.Tasks)-1].Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Tasks[len(m.Tasks)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -6568,9 +6812,9 @@ func (m *Call_Reconcile) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Reconcile_Task) Unmarshal(data []byte) error {
+func (m *Call_Reconcile_Task) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -6582,7 +6826,7 @@ func (m *Call_Reconcile_Task) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6610,7 +6854,7 @@ func (m *Call_Reconcile_Task) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6624,7 +6868,7 @@ func (m *Call_Reconcile_Task) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.TaskID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.TaskID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6641,7 +6885,7 @@ func (m *Call_Reconcile_Task) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6658,13 +6902,13 @@ func (m *Call_Reconcile_Task) Unmarshal(data []byte) error {
 			if m.AgentID == nil {
 				m.AgentID = &mesos.AgentID{}
 			}
-			if err := m.AgentID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.AgentID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -6686,9 +6930,9 @@ func (m *Call_Reconcile_Task) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Message) Unmarshal(data []byte) error {
+func (m *Call_Message) Unmarshal(dAtA []byte) error {
 	var hasFields [1]uint64
-	l := len(data)
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -6700,7 +6944,7 @@ func (m *Call_Message) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6728,7 +6972,7 @@ func (m *Call_Message) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6742,7 +6986,7 @@ func (m *Call_Message) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.AgentID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.AgentID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6759,7 +7003,7 @@ func (m *Call_Message) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6773,7 +7017,7 @@ func (m *Call_Message) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.ExecutorID.Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.ExecutorID.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -6790,7 +7034,7 @@ func (m *Call_Message) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				byteLen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6804,12 +7048,15 @@ func (m *Call_Message) Unmarshal(data []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Data = append([]byte{}, data[iNdEx:postIndex]...)
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
+			}
 			iNdEx = postIndex
 			hasFields[0] |= uint64(0x00000004)
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -6837,8 +7084,8 @@ func (m *Call_Message) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func (m *Call_Request) Unmarshal(data []byte) error {
-	l := len(data)
+func (m *Call_Request) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		preIndex := iNdEx
@@ -6850,7 +7097,7 @@ func (m *Call_Request) Unmarshal(data []byte) error {
 			if iNdEx >= l {
 				return io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6878,7 +7125,7 @@ func (m *Call_Request) Unmarshal(data []byte) error {
 				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				msglen |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6893,13 +7140,13 @@ func (m *Call_Request) Unmarshal(data []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Requests = append(m.Requests, mesos.Request{})
-			if err := m.Requests[len(m.Requests)-1].Unmarshal(data[iNdEx:postIndex]); err != nil {
+			if err := m.Requests[len(m.Requests)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
-			skippy, err := skipScheduler(data[iNdEx:])
+			skippy, err := skipScheduler(dAtA[iNdEx:])
 			if err != nil {
 				return err
 			}
@@ -6918,8 +7165,8 @@ func (m *Call_Request) Unmarshal(data []byte) error {
 	}
 	return nil
 }
-func skipScheduler(data []byte) (n int, err error) {
-	l := len(data)
+func skipScheduler(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
 		var wire uint64
@@ -6930,7 +7177,7 @@ func skipScheduler(data []byte) (n int, err error) {
 			if iNdEx >= l {
 				return 0, io.ErrUnexpectedEOF
 			}
-			b := data[iNdEx]
+			b := dAtA[iNdEx]
 			iNdEx++
 			wire |= (uint64(b) & 0x7F) << shift
 			if b < 0x80 {
@@ -6948,7 +7195,7 @@ func skipScheduler(data []byte) (n int, err error) {
 					return 0, io.ErrUnexpectedEOF
 				}
 				iNdEx++
-				if data[iNdEx-1] < 0x80 {
+				if dAtA[iNdEx-1] < 0x80 {
 					break
 				}
 			}
@@ -6965,7 +7212,7 @@ func skipScheduler(data []byte) (n int, err error) {
 				if iNdEx >= l {
 					return 0, io.ErrUnexpectedEOF
 				}
-				b := data[iNdEx]
+				b := dAtA[iNdEx]
 				iNdEx++
 				length |= (int(b) & 0x7F) << shift
 				if b < 0x80 {
@@ -6988,7 +7235,7 @@ func skipScheduler(data []byte) (n int, err error) {
 					if iNdEx >= l {
 						return 0, io.ErrUnexpectedEOF
 					}
-					b := data[iNdEx]
+					b := dAtA[iNdEx]
 					iNdEx++
 					innerWire |= (uint64(b) & 0x7F) << shift
 					if b < 0x80 {
@@ -6999,7 +7246,7 @@ func skipScheduler(data []byte) (n int, err error) {
 				if innerWireType == 4 {
 					break
 				}
-				next, err := skipScheduler(data[start:])
+				next, err := skipScheduler(dAtA[start:])
 				if err != nil {
 					return 0, err
 				}
@@ -7022,3 +7269,94 @@ var (
 	ErrInvalidLengthScheduler = fmt.Errorf("proto: negative length found during unmarshaling")
 	ErrIntOverflowScheduler   = fmt.Errorf("proto: integer overflow")
 )
+
+func init() { proto.RegisterFile("scheduler/scheduler.proto", fileDescriptorScheduler) }
+
+var fileDescriptorScheduler = []byte{
+	// 1353 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0xd4, 0x56, 0x4d, 0x6c, 0x1b, 0xc5,
+	0x17, 0xcf, 0x38, 0xb6, 0xd7, 0x7e, 0x4e, 0xd2, 0xfd, 0xcf, 0x1f, 0x55, 0x66, 0x29, 0x9b, 0x34,
+	0x42, 0x22, 0x42, 0xaa, 0x8d, 0x22, 0x68, 0xa1, 0x2d, 0x52, 0xfd, 0xb1, 0x6e, 0x57, 0x4d, 0xe3,
+	0x30, 0xb6, 0x5b, 0x89, 0x4b, 0xb4, 0xd9, 0x1d, 0x3b, 0xab, 0x6c, 0x76, 0xc3, 0x7e, 0xa4, 0xf4,
+	0xc6, 0x91, 0x13, 0x42, 0xdc, 0x51, 0x85, 0xb8, 0x70, 0x82, 0x2b, 0x27, 0xc4, 0x05, 0xa9, 0xc7,
+	0x1e, 0x39, 0x45, 0x8d, 0xb9, 0x70, 0xec, 0x91, 0x23, 0x9a, 0xd9, 0xd9, 0xf5, 0xe6, 0xc3, 0x86,
+	0xb6, 0x12, 0x12, 0xb7, 0xdd, 0x37, 0xbf, 0xdf, 0xbc, 0x37, 0x6f, 0xde, 0xfb, 0xbd, 0x81, 0xd7,
+	0x03, 0x73, 0x97, 0x5a, 0x91, 0x43, 0xfd, 0x7a, 0xfa, 0x55, 0x3b, 0xf0, 0xbd, 0xd0, 0xc3, 0x17,
+	0xf6, 0x69, 0xe0, 0x05, 0xb5, 0xd4, 0xac, 0x5c, 0x31, 0x3d, 0x8b, 0xd6, 0xa2, 0x1d, 0xea, 0xd7,
+	0x6c, 0x37, 0xa4, 0xbe, 0x6b, 0x38, 0x75, 0xdb, 0x1d, 0xfa, 0x46, 0x9d, 0x23, 0xaf, 0x8c, 0xbc,
+	0xf8, 0x23, 0xe6, 0x2b, 0x57, 0x46, 0x76, 0xb8, 0x1b, 0xed, 0xd4, 0x4c, 0x6f, 0xbf, 0x3e, 0xf2,
+	0x46, 0x5e, 0x9d, 0x9b, 0x77, 0xa2, 0x21, 0xff, 0xe3, 0x3f, 0xfc, 0x2b, 0x86, 0xaf, 0xfe, 0x0c,
+	0x50, 0xd0, 0x0e, 0xa9, 0x1b, 0xe2, 0x3a, 0xe4, 0xc3, 0x47, 0x07, 0xb4, 0x8a, 0x56, 0x72, 0x6b,
+	0x4b, 0xeb, 0x6f, 0xd4, 0x4e, 0xc5, 0x51, 0xe3, 0xa8, 0x5a, 0xff, 0xd1, 0x01, 0x25, 0x1c, 0x88,
+	0x1b, 0x00, 0x41, 0xb4, 0x13, 0x98, 0xbe, 0xbd, 0x43, 0xad, 0x6a, 0x6e, 0x05, 0xad, 0x55, 0xd6,
+	0x2f, 0x4f, 0xa1, 0xf5, 0x52, 0x20, 0xc9, 0x90, 0xf0, 0xfb, 0x50, 0xf4, 0x86, 0x43, 0xea, 0x07,
+	0xd5, 0x79, 0x4e, 0x7f, 0x73, 0x0a, 0xbd, 0xcb, 0x41, 0x44, 0x80, 0xf1, 0x07, 0x20, 0xf9, 0x34,
+	0x30, 0x6d, 0xd7, 0xaa, 0xe6, 0x39, 0x4f, 0x9d, 0xc2, 0x23, 0x31, 0x8a, 0x24, 0x70, 0xe6, 0x30,
+	0x3a, 0xb0, 0x8c, 0x90, 0x56, 0x0b, 0x33, 0x1d, 0x0e, 0x38, 0x88, 0x08, 0x30, 0x73, 0xb8, 0x4f,
+	0x83, 0xc0, 0x18, 0xd1, 0x6a, 0x71, 0xa6, 0xc3, 0x7b, 0x31, 0x8a, 0x24, 0x70, 0xc6, 0x1c, 0x1a,
+	0xb6, 0x13, 0xf9, 0xb4, 0x2a, 0xcd, 0x64, 0x76, 0x62, 0x14, 0x49, 0xe0, 0x78, 0x1d, 0x0a, 0xd4,
+	0xf7, 0x3d, 0xbf, 0x5a, 0xe2, 0xbc, 0x4b, 0x53, 0x78, 0x1a, 0xc3, 0x90, 0x18, 0xaa, 0x7c, 0x8d,
+	0x00, 0x26, 0xa9, 0xc6, 0x1d, 0x58, 0x18, 0xfa, 0xc6, 0x3e, 0x7d, 0xe8, 0xf9, 0x7b, 0xdb, 0xb6,
+	0xc5, 0xaf, 0xb6, 0xb2, 0x8e, 0xc5, 0x4e, 0x9d, 0x64, 0x49, 0x6f, 0x37, 0x2f, 0x8c, 0x8f, 0x96,
+	0x2b, 0x19, 0x03, 0xa9, 0xa4, 0x44, 0xdd, 0xc2, 0x37, 0x41, 0xd9, 0xa5, 0x86, 0x1f, 0xee, 0x50,
+	0x23, 0xdc, 0xe6, 0x45, 0x78, 0x68, 0x38, 0xdb, 0x01, 0x35, 0x3d, 0xd7, 0x0a, 0xf8, 0xcd, 0x23,
+	0x52, 0x4d, 0x11, 0xba, 0x00, 0xf4, 0xe2, 0x75, 0xe5, 0x10, 0x8a, 0xf1, 0xfd, 0xe1, 0x77, 0xd2,
+	0xeb, 0x46, 0x2b, 0xf3, 0x6b, 0x95, 0xf5, 0x05, 0x11, 0x09, 0x5f, 0x6e, 0xe6, 0x9f, 0x1c, 0x2d,
+	0xcf, 0xa5, 0x77, 0x7c, 0x0b, 0x96, 0x6c, 0xf7, 0x90, 0xfa, 0x01, 0xdd, 0x16, 0x9c, 0x1c, 0xe7,
+	0xfc, 0x5f, 0x70, 0xf4, 0x78, 0x31, 0x4b, 0x5d, 0xb4, 0x33, 0xb6, 0x40, 0xd1, 0x40, 0x12, 0xf7,
+	0x8f, 0xaf, 0x43, 0x89, 0x6f, 0x32, 0x49, 0xc2, 0x52, 0xd6, 0x35, 0x4b, 0x00, 0xdb, 0x61, 0x7c,
+	0xb4, 0x2c, 0x09, 0x03, 0x91, 0x38, 0x41, 0xb7, 0x94, 0x0f, 0xa1, 0x18, 0x57, 0x03, 0xae, 0x43,
+	0x31, 0x08, 0x8d, 0x30, 0x0a, 0xc4, 0x1e, 0xff, 0x13, 0x7b, 0xf4, 0x8d, 0x60, 0xaf, 0xc7, 0x17,
+	0x92, 0x33, 0xc4, 0x30, 0xe5, 0x5b, 0x04, 0x92, 0xa8, 0x08, 0x16, 0x82, 0x31, 0xa2, 0x6e, 0x78,
+	0x36, 0x84, 0x06, 0x33, 0x67, 0x43, 0x10, 0x06, 0x22, 0x71, 0x82, 0xce, 0xee, 0xb1, 0x42, 0x3f,
+	0xa3, 0x66, 0x14, 0x7a, 0xfc, 0x04, 0xb9, 0x13, 0xde, 0x35, 0xb1, 0xa2, 0xb7, 0x9b, 0x58, 0xec,
+	0x00, 0x13, 0x1b, 0x81, 0x84, 0xa9, 0x5b, 0x18, 0x43, 0xde, 0x32, 0x42, 0xa3, 0x3a, 0xbf, 0x92,
+	0x5b, 0x5b, 0x20, 0xfc, 0x5b, 0xf9, 0x06, 0x81, 0x24, 0x6a, 0x0f, 0x5f, 0x3d, 0x11, 0x23, 0x3a,
+	0x27, 0xc6, 0xca, 0xb9, 0xf1, 0x35, 0x4f, 0xc7, 0x87, 0xce, 0x8f, 0x6f, 0x69, 0x46, 0x6c, 0x17,
+	0xd3, 0xe4, 0x32, 0x29, 0x28, 0xa4, 0x39, 0x7c, 0x1b, 0x0a, 0xbc, 0xc4, 0xb1, 0x3a, 0xe9, 0x41,
+	0x96, 0xbf, 0xb2, 0xc8, 0x75, 0x62, 0x5c, 0x8d, 0x20, 0xcf, 0xc4, 0x09, 0x2f, 0x01, 0xf4, 0x06,
+	0xcd, 0x5e, 0x8b, 0xe8, 0x4d, 0xad, 0x2d, 0x23, 0x0c, 0x50, 0xec, 0x76, 0x3a, 0x1a, 0xe9, 0xc9,
+	0x39, 0x5c, 0x01, 0x89, 0x68, 0xbd, 0x96, 0xbe, 0xd9, 0x96, 0xe7, 0xd9, 0xc2, 0x60, 0xab, 0xdd,
+	0xe8, 0x6b, 0x72, 0x9e, 0x2d, 0xdc, 0xd3, 0x7a, 0xbd, 0xc6, 0x6d, 0x4d, 0x2e, 0xb0, 0x9f, 0x4e,
+	0x43, 0xdf, 0x18, 0x10, 0x4d, 0x2e, 0xe2, 0x32, 0x14, 0x34, 0x42, 0xba, 0x44, 0x96, 0xf0, 0x22,
+	0x94, 0xef, 0x68, 0x0d, 0xd2, 0x6f, 0x6a, 0x8d, 0xbe, 0x5c, 0x52, 0xf2, 0x5f, 0x7c, 0xa7, 0xa2,
+	0xd5, 0xc7, 0x32, 0xe4, 0x5b, 0x86, 0xe3, 0x9c, 0xd3, 0x6c, 0xe8, 0xa5, 0x9a, 0xad, 0x26, 0x74,
+	0x38, 0xc7, 0x75, 0x58, 0x39, 0xd3, 0xf6, 0xcc, 0x59, 0x56, 0x86, 0x3f, 0x82, 0x72, 0xaa, 0xa8,
+	0x42, 0x46, 0x97, 0xcf, 0x27, 0xa5, 0xca, 0x40, 0x26, 0x0c, 0xfc, 0x1e, 0x14, 0x0d, 0xd3, 0xa4,
+	0x07, 0xa1, 0x90, 0xd2, 0x4b, 0xe7, 0x73, 0x1b, 0x1c, 0x43, 0x04, 0x16, 0x5f, 0x03, 0xc9, 0xa2,
+	0xa6, 0x63, 0xbb, 0xd3, 0x85, 0x94, 0xd3, 0xda, 0x31, 0x88, 0x24, 0x68, 0x76, 0xba, 0x3d, 0xdb,
+	0x71, 0x84, 0x8c, 0x4e, 0x39, 0xdd, 0x5d, 0xdb, 0x71, 0x08, 0xc7, 0xb1, 0xb6, 0x09, 0x76, 0xa3,
+	0xd0, 0xf2, 0x1e, 0xba, 0x53, 0x05, 0x34, 0x3e, 0x9c, 0x40, 0x91, 0x14, 0x8f, 0x5b, 0x50, 0x31,
+	0xcc, 0x3d, 0xd7, 0x7b, 0xe8, 0x50, 0x6b, 0x44, 0x85, 0x8e, 0x5e, 0x9e, 0x76, 0xbe, 0x14, 0x48,
+	0xb2, 0x2c, 0x96, 0x5e, 0x9f, 0x09, 0x99, 0x69, 0x3b, 0xb4, 0x5a, 0x9e, 0x95, 0x5e, 0x92, 0xc0,
+	0xc8, 0x84, 0xc1, 0x12, 0x95, 0x54, 0x2d, 0xcc, 0x4a, 0xd4, 0x99, 0xc1, 0x71, 0x8d, 0xcd, 0xb8,
+	0x4f, 0x23, 0x1a, 0x84, 0xd5, 0xca, 0x2c, 0x22, 0x89, 0x41, 0x24, 0x41, 0x2b, 0x16, 0x94, 0xd3,
+	0x8b, 0xc6, 0x37, 0x60, 0x29, 0x53, 0x94, 0xee, 0xd0, 0x13, 0xda, 0xf3, 0xda, 0x99, 0xb2, 0x74,
+	0x87, 0x1e, 0x59, 0x1c, 0x66, 0x7f, 0xb1, 0x02, 0x85, 0xa1, 0xe7, 0x9b, 0x94, 0x37, 0x74, 0x49,
+	0xf4, 0x5b, 0x6c, 0x52, 0x7e, 0x44, 0x50, 0x8c, 0x6b, 0x82, 0x65, 0x28, 0x11, 0xd7, 0x44, 0xd8,
+	0x4f, 0xab, 0xab, 0x2c, 0x84, 0xa9, 0x24, 0x0c, 0x01, 0x29, 0x09, 0x79, 0x0d, 0xf0, 0x4d, 0x00,
+	0xef, 0x80, 0xfa, 0x46, 0x68, 0x7b, 0x6e, 0x22, 0xf2, 0x17, 0xb3, 0xfc, 0x5a, 0x37, 0x59, 0x16,
+	0x21, 0x64, 0xf0, 0x78, 0x0d, 0xa4, 0xa1, 0xed, 0x84, 0x93, 0x27, 0x44, 0xe2, 0xba, 0x13, 0x5b,
+	0x49, 0xb2, 0xac, 0xf8, 0x20, 0x89, 0x6a, 0x7c, 0xd5, 0x88, 0x33, 0x3e, 0x73, 0xb3, 0x7d, 0x1e,
+	0x42, 0x9e, 0xd5, 0x32, 0xbe, 0x0a, 0x52, 0x68, 0x04, 0x99, 0x19, 0xbc, 0x98, 0x19, 0x1d, 0x4c,
+	0x18, 0x85, 0xb7, 0x62, 0xfc, 0x4f, 0x8a, 0x0c, 0xad, 0x5b, 0x27, 0x04, 0x39, 0xf7, 0xcf, 0x05,
+	0x59, 0xf9, 0x12, 0x41, 0x29, 0x69, 0x88, 0xd3, 0xd3, 0x03, 0xbd, 0xec, 0xf4, 0xb8, 0x7e, 0x22,
+	0x98, 0x17, 0x9a, 0x60, 0xca, 0x63, 0x04, 0x95, 0x4c, 0x8b, 0xbd, 0xd2, 0x34, 0xcc, 0x24, 0x33,
+	0xf7, 0x22, 0xc9, 0xbc, 0x04, 0xf9, 0x28, 0xb2, 0xad, 0x78, 0xfa, 0x35, 0x4b, 0xe3, 0xa3, 0xe5,
+	0xfc, 0x60, 0xa0, 0xb7, 0x09, 0xb7, 0x2a, 0xbf, 0x22, 0x28, 0xa7, 0x1d, 0x8c, 0x6f, 0x41, 0x81,
+	0xb1, 0x92, 0xea, 0x78, 0xeb, 0x6f, 0x3a, 0x9e, 0xbb, 0x4e, 0x1a, 0x84, 0x13, 0xd9, 0xd5, 0x33,
+	0xe3, 0xbf, 0x7e, 0xf5, 0xff, 0x85, 0x37, 0xc7, 0x0d, 0xf6, 0x32, 0xe3, 0x6a, 0x85, 0xdf, 0x85,
+	0x92, 0x10, 0xae, 0xd3, 0x9d, 0x28, 0x10, 0x22, 0xab, 0x29, 0x6a, 0xf5, 0x07, 0x24, 0x06, 0xfd,
+	0x22, 0x94, 0xd3, 0x41, 0x2f, 0x23, 0xbc, 0x00, 0xa5, 0xbe, 0xd6, 0x20, 0xed, 0xee, 0x83, 0x4d,
+	0x39, 0xc7, 0x86, 0x7b, 0xa3, 0xd5, 0xd2, 0xb6, 0xfa, 0xf2, 0x3c, 0x9b, 0xe7, 0x6d, 0xad, 0xb5,
+	0xa1, 0x6f, 0xb2, 0x49, 0x0f, 0x50, 0x24, 0xda, 0x7d, 0xfd, 0x3e, 0x1b, 0xf4, 0x25, 0xc8, 0xdf,
+	0xd5, 0x37, 0x36, 0xe4, 0x22, 0x23, 0xf7, 0xee, 0x0c, 0xfa, 0x9c, 0x2c, 0xe1, 0x0b, 0x50, 0x69,
+	0xb4, 0xee, 0x6e, 0x76, 0x1f, 0x6c, 0x68, 0xed, 0xdb, 0x9a, 0x5c, 0x62, 0xae, 0x88, 0xd6, 0xea,
+	0x6e, 0xb6, 0xf4, 0x0d, 0x4d, 0x2e, 0x67, 0x5f, 0x0b, 0x10, 0xbf, 0x29, 0x3e, 0x1e, 0x68, 0xbd,
+	0xbe, 0x5c, 0xe1, 0xfb, 0x0c, 0xb6, 0xb6, 0x88, 0xd6, 0xeb, 0xc9, 0x0b, 0xf1, 0x0b, 0xa1, 0x79,
+	0xfb, 0xe9, 0xb1, 0x3a, 0xf7, 0xdb, 0xb1, 0x3a, 0xf7, 0xec, 0x58, 0x45, 0xcf, 0x8f, 0x55, 0xf4,
+	0xe7, 0xb1, 0x8a, 0x3e, 0x1f, 0xab, 0xe8, 0xfb, 0xb1, 0x8a, 0x7e, 0x1a, 0xab, 0xe8, 0x97, 0xb1,
+	0x8a, 0x9e, 0x8c, 0x55, 0xf4, 0x74, 0xac, 0xa2, 0x67, 0x63, 0x15, 0xfd, 0x31, 0x56, 0xe7, 0x9e,
+	0x8f, 0x55, 0xf4, 0xd5, 0xef, 0xea, 0xdc, 0x27, 0xe5, 0xb4, 0xe6, 0xfe, 0x0a, 0x00, 0x00, 0xff,
+	0xff, 0x72, 0x4d, 0x9c, 0x90, 0x36, 0x0e, 0x00, 0x00,
+}

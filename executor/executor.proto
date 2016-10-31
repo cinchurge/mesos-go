@@ -16,7 +16,7 @@
 
 package mesos.executor;
 
-import "github.com/mesos/mesos-go/mesos.proto";
+import "code.uber.internal/infra/mesos-go/mesos.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 option go_package = "executor";

@@ -1,0 +1,48 @@
+hash: b992f6d70ceb010ba7875abf23c9dc3c0fea232bec0a2b1d3321ccd16adf77ca
+updated: 2016-10-31T17:18:37.304508372-07:00
+imports:
+- name: github.com/beorn7/perks
+  version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
+  subpackages:
+  - quantile
+- name: github.com/gogo/protobuf
+  version: a9cd0c35b97daf74d0ebf3514c5254814b2703b4
+  subpackages:
+  - gogoproto
+  - jsonpb
+  - proto
+  - protoc-gen-gogo/descriptor
+  - sortkeys
+  - types
+- name: github.com/golang/protobuf
+  version: 98fa357170587e470c5f27d3c3ea0947b71eb455
+  subpackages:
+  - proto
+- name: github.com/matttproud/golang_protobuf_extensions
+  version: c12348ce28de40eed0136aa2b644d0ee0650e56c
+  subpackages:
+  - pbutil
+- name: github.com/pborman/uuid
+  version: c55201b036063326c5b1b89ccfe45a184973d073
+- name: github.com/pquerna/ffjson
+  version: 9d7075fb37d35c5b005b4cd3bdd1074e345a5d4e
+  subpackages:
+  - fflib/v1
+  - fflib/v1/internal
+- name: github.com/prometheus/client_golang
+  version: 3fb8ace93bc4ccddea55af62320c2fd109252880
+  subpackages:
+  - prometheus
+- name: github.com/prometheus/client_model
+  version: fa8ad6fec33561be4280a8f0514318c79d7f6cb6
+  subpackages:
+  - go
+- name: github.com/prometheus/common
+  version: 85637ea67b04b5c3bb25e671dacded2977f8f9f6
+  subpackages:
+  - expfmt
+  - internal/bitbucket.org/ww/goautoneg
+  - model
+- name: github.com/prometheus/procfs
+  version: abf152e5f3e97f2fafac028d2cc06c1feb87ffa5
+testImports: []

@@ -1,6 +1,4 @@
-PROTO_PATH := ${GOPATH}/src/:./vendor/:.
-PROTO_PATH := ${PROTO_PATH}:./vendor/github.com/gogo/protobuf/protobuf
-PROTO_PATH := ${PROTO_PATH}:./vendor/github.com/gogo/protobuf/gogoproto
+PROTO_PATH := ${GOPATH}/src/:.
 
 PACKAGES ?= $(shell go list ./...|grep -v vendor)
 BINARIES ?= $(shell go list -f "{{.Name}} {{.ImportPath}}" ./cmd/...|grep -v -e vendor|grep -e ^main|cut -f2 -d' ')
@@ -27,18 +25,22 @@ codecs: protobufs ffjson
 .PHONY: protobufs
 protobufs: clean-protobufs
 	protoc --proto_path="${PROTO_PATH}" --gogo_out=. *.proto
-	protoc --proto_path="${PROTO_PATH}" --gogo_out=. ./scheduler/*.proto
+	protoc --proto_path="${PROTO_PATH}" --gogo_out=. ./allocator/*.proto
 	protoc --proto_path="${PROTO_PATH}" --gogo_out=. ./executor/*.proto
+	protoc --proto_path="${PROTO_PATH}" --gogo_out=. ./maintenance/*.proto
+	protoc --proto_path="${PROTO_PATH}" --gogo_out=. ./scheduler/*.proto
 
 .PHONY: clean-protobufs
 clean-protobufs:
-	-rm *.pb.go **/*.pb.go
+	rm -f *.pb.go **/*.pb.go
 
 .PHONY: ffjson
 ffjson: clean-ffjson
 	ffjson *.pb.go
-	ffjson scheduler/*.pb.go
+	ffjson allocator/*.pb.go
 	ffjson executor/*.pb.go
+	ffjson maintenance/*.pb.go
+	ffjson scheduler/*.pb.go
 
 .PHONY: clean-ffjson
 clean-ffjson:
@@ -69,3 +71,8 @@ docker:
 	test -n "$(GID)" || (echo 'ERROR: $$GID is undefined'; exit 1)
 	docker run --rm -v "$$PWD":/src -w /go/src/$(GOPKG_DIRNAME) golang:1.6.1-alpine sh -c $(BUILD_STEP)' && '$(COPY_STEP)
 	make -C docker
+
+.PHONY: jenkins
+jenkins:
+	mkdir -p gocode/src
+	export GOPATH=$(CURDIR)/gocode && export PATH=${PATH}:${GOPATH}/bin && glide install && go test
