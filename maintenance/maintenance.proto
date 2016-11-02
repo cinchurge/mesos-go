@@ -20,8 +20,7 @@ import "code.uber.internal/infra/mesos-go/mesos.proto";
 import "code.uber.internal/infra/mesos-go/allocator/allocator.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
-option java_package = "org.apache.mesos.maintenance";
-option java_outer_classname = "Protos";
+option go_package = "maintenance";
 
 // This is an illustration of a maintenance `Schedule`:
 //

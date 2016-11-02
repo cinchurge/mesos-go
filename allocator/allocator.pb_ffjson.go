@@ -3,7 +3,7 @@
 // source: allocator/allocator.pb.go
 // DO NOT EDIT!
 
-package mesos_allocator
+package allocator
 
 import (
 	"bytes"
@@ -238,7 +238,7 @@ mainparse:
 
 handle_Status:
 
-	/* handler: uj.Status type=mesos_allocator.InverseOfferStatus_Status kind=int32 quoted=false*/
+	/* handler: uj.Status type=allocator.InverseOfferStatus_Status kind=int32 quoted=false*/
 
 	{
 		if tok == fflib.FFTok_null {

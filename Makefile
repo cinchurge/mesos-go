@@ -71,8 +71,3 @@ docker:
 	test -n "$(GID)" || (echo 'ERROR: $$GID is undefined'; exit 1)
 	docker run --rm -v "$$PWD":/src -w /go/src/$(GOPKG_DIRNAME) golang:1.6.1-alpine sh -c $(BUILD_STEP)' && '$(COPY_STEP)
 	make -C docker
-
-.PHONY: jenkins
-jenkins:
-	mkdir -p gocode/src
-	export GOPATH=$(CURDIR)/gocode && export PATH=${PATH}:${GOPATH}/bin && glide install && go test

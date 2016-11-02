@@ -3,7 +3,7 @@
 // source: maintenance/maintenance.pb.go
 // DO NOT EDIT!
 
-package mesos_maintenance
+package maintenance
 
 import (
 	"bytes"
@@ -236,7 +236,7 @@ mainparse:
 
 handle_DrainingMachines:
 
-	/* handler: uj.DrainingMachines type=[]*mesos_maintenance.ClusterStatus_DrainingMachine kind=slice quoted=false*/
+	/* handler: uj.DrainingMachines type=[]*maintenance.ClusterStatus_DrainingMachine kind=slice quoted=false*/
 
 	{
 
@@ -277,7 +277,7 @@ handle_DrainingMachines:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__DrainingMachines type=*mesos_maintenance.ClusterStatus_DrainingMachine kind=ptr quoted=false*/
+				/* handler: tmp_uj__DrainingMachines type=*maintenance.ClusterStatus_DrainingMachine kind=ptr quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -640,7 +640,7 @@ handle_Id:
 
 handle_Statuses:
 
-	/* handler: uj.Statuses type=[]*mesos_allocator.InverseOfferStatus kind=slice quoted=false*/
+	/* handler: uj.Statuses type=[]*allocator.InverseOfferStatus kind=slice quoted=false*/
 
 	{
 
@@ -654,13 +654,13 @@ handle_Statuses:
 			uj.Statuses = nil
 		} else {
 
-			uj.Statuses = []*mesos_allocator.InverseOfferStatus{}
+			uj.Statuses = []*allocator.InverseOfferStatus{}
 
 			wantVal := true
 
 			for {
 
-				var tmp_uj__Statuses *mesos_allocator.InverseOfferStatus
+				var tmp_uj__Statuses *allocator.InverseOfferStatus
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -681,7 +681,7 @@ handle_Statuses:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__Statuses type=*mesos_allocator.InverseOfferStatus kind=ptr quoted=false*/
+				/* handler: tmp_uj__Statuses type=*allocator.InverseOfferStatus kind=ptr quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
@@ -693,7 +693,7 @@ handle_Statuses:
 					}
 
 					if tmp_uj__Statuses == nil {
-						tmp_uj__Statuses = new(mesos_allocator.InverseOfferStatus)
+						tmp_uj__Statuses = new(allocator.InverseOfferStatus)
 					}
 
 					err = tmp_uj__Statuses.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
@@ -906,7 +906,7 @@ mainparse:
 
 handle_Windows:
 
-	/* handler: uj.Windows type=[]*mesos_maintenance.Window kind=slice quoted=false*/
+	/* handler: uj.Windows type=[]*maintenance.Window kind=slice quoted=false*/
 
 	{
 
@@ -947,7 +947,7 @@ handle_Windows:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__Windows type=*mesos_maintenance.Window kind=ptr quoted=false*/
+				/* handler: tmp_uj__Windows type=*maintenance.Window kind=ptr quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {

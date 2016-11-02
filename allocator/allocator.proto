@@ -19,6 +19,8 @@ package mesos.allocator;
 import "code.uber.internal/infra/mesos-go/mesos.proto";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
+option go_package = "allocator";
+
 /**
  * Describes the status of an inverse offer.
  *
