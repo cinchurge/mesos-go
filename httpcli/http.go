@@ -113,6 +113,7 @@ type ResponseHandler func(*http.Response, error) (mesos.Response, error)
 // A Client is a Mesos HTTP APIs client.
 type Client struct {
 	url            string
+	method         string
 	do             DoFunc
 	header         http.Header
 	codec          *encoding.Codec
@@ -127,6 +128,7 @@ type Client struct {
 // invoking Do.
 func New(opts ...Opt) *Client {
 	c := &Client{
+		method:      "POST",
 		codec:       &encoding.ProtobufCodec,
 		do:          With(),
 		header:      http.Header{},
@@ -185,12 +187,18 @@ func (c *Client) Mesos(opts ...RequestOpt) mesos.Client {
 // BuildRequest is a factory func that generates and returns an http.Request for the
 // given marshaler and request options.
 func (c *Client) BuildRequest(m encoding.Marshaler, opt ...RequestOpt) (*http.Request, error) {
-	var body bytes.Buffer //TODO(jdef): use a pool to allocate these (and reduce garbage)?
-	if err := c.codec.NewEncoder(&body).Invoke(m); err != nil {
-		return nil, err
+	var bodyPtr *bytes.Buffer
+
+	// Marshalize payload if it isn't nil
+	if m != nil {
+		var body bytes.Buffer //TODO(jdef): use a pool to allocate these (and reduce garbage)?
+		if err := c.codec.NewEncoder(&body).Invoke(m); err != nil {
+			return nil, err
+		}
+		bodyPtr = &body
 	}
 
-	req, err := http.NewRequest("POST", c.url, &body)
+	req, err := http.NewRequest(c.method, c.url, bodyPtr)
 	if err != nil {
 		return nil, err
 	}
@@ -255,7 +263,7 @@ func (c *Client) Do(m encoding.Marshaler, opt ...RequestOpt) (res mesos.Response
 	return
 }
 
-// ErrorMapper returns am Opt that overrides the existing error mapping behavior of the client.
+// ErrorMapper returns an Opt that overrides the existing error mapping behavior of the client.
 func ErrorMapper(em ErrorMapperFunc) Opt {
 	return func(c *Client) Opt {
 		old := c.errorMapper
@@ -270,6 +278,15 @@ func Endpoint(rawurl string) Opt {
 		old := c.url
 		c.url = rawurl
 		return Endpoint(old)
+	}
+}
+
+// Method returns an Opt that overrides the default method
+func Method(method string) Opt {
+	return func(c *Client) Opt {
+		old := c.method
+		c.method = method
+		return Method(old)
 	}
 }
 

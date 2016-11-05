@@ -1,5 +1,5 @@
-hash: b992f6d70ceb010ba7875abf23c9dc3c0fea232bec0a2b1d3321ccd16adf77ca
-updated: 2016-10-31T17:18:37.304508372-07:00
+hash: 0c6cd6c99fdc424b46e408cf875ebc00b231e6fd991e6ff565dcd56288c38e17
+updated: 2016-11-07T15:38:40.312363957Z
 imports:
 - name: github.com/beorn7/perks
   version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
@@ -9,11 +9,8 @@ imports:
   version: a9cd0c35b97daf74d0ebf3514c5254814b2703b4
   subpackages:
   - gogoproto
-  - jsonpb
   - proto
   - protoc-gen-gogo/descriptor
-  - sortkeys
-  - types
 - name: github.com/golang/protobuf
   version: 98fa357170587e470c5f27d3c3ea0947b71eb455
   subpackages:
@@ -41,8 +38,12 @@ imports:
   version: 85637ea67b04b5c3bb25e671dacded2977f8f9f6
   subpackages:
   - expfmt
-  - internal/bitbucket.org/ww/goautoneg
   - model
+  - internal/bitbucket.org/ww/goautoneg
 - name: github.com/prometheus/procfs
   version: abf152e5f3e97f2fafac028d2cc06c1feb87ffa5
-testImports: []
+- name: github.com/stretchr/testify
+  version: 976c720a22c8eb4eb6a0b4348ad85ad12491a506
+  subpackages:
+  - assert
+devImports: []
