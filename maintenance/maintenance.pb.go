@@ -22,6 +22,14 @@ import mesos "code.uber.internal/infra/mesos-go"
 import mesos_allocator "code.uber.internal/infra/mesos-go/allocator"
 import _ "github.com/gogo/protobuf/gogoproto"
 
+import strings "strings"
+import github_com_gogo_protobuf_proto "github.com/gogo/protobuf/proto"
+import sort "sort"
+import strconv "strconv"
+import reflect "reflect"
+
+import io "io"
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
@@ -38,14 +46,12 @@ const _ = proto.GoGoProtoPackageIsVersion2 // please upgrade the proto package
 // in the same `unavailability`.
 type Window struct {
 	// Machines affected by this maintenance window.
-	MachineIds []*mesos.MachineID `protobuf:"bytes,1,rep,name=machine_ids,json=machineIds" json:"machine_ids,omitempty"`
+	MachineIds []*mesos.MachineID `protobuf:"bytes,1,rep,name=machine_ids" json:"machine_ids,omitempty"`
 	// Interval during which this set of machines is expected to be down.
-	Unavailability   *mesos.Unavailability `protobuf:"bytes,2,req,name=unavailability" json:"unavailability,omitempty"`
-	XXX_unrecognized []byte                `json:"-"`
+	Unavailability *mesos.Unavailability `protobuf:"bytes,2,req,name=unavailability" json:"unavailability,omitempty"`
 }
 
 func (m *Window) Reset()                    { *m = Window{} }
-func (m *Window) String() string            { return proto.CompactTextString(m) }
 func (*Window) ProtoMessage()               {}
 func (*Window) Descriptor() ([]byte, []int) { return fileDescriptorMaintenance, []int{0} }
 
@@ -67,12 +73,10 @@ func (m *Window) GetUnavailability() *mesos.Unavailability {
 // A list of maintenance windows.
 // For example, this may represent a rolling restart of agents.
 type Schedule struct {
-	Windows          []*Window `protobuf:"bytes,1,rep,name=windows" json:"windows,omitempty"`
-	XXX_unrecognized []byte    `json:"-"`
+	Windows []*Window `protobuf:"bytes,1,rep,name=windows" json:"windows,omitempty"`
 }
 
 func (m *Schedule) Reset()                    { *m = Schedule{} }
-func (m *Schedule) String() string            { return proto.CompactTextString(m) }
 func (*Schedule) ProtoMessage()               {}
 func (*Schedule) Descriptor() ([]byte, []int) { return fileDescriptorMaintenance, []int{1} }
 
@@ -87,13 +91,11 @@ func (m *Schedule) GetWindows() []*Window {
 // Represents the maintenance status of each machine in the cluster.
 // The lists correspond to the `MachineInfo.Mode` enumeration.
 type ClusterStatus struct {
-	DrainingMachines []*ClusterStatus_DrainingMachine `protobuf:"bytes,1,rep,name=draining_machines,json=drainingMachines" json:"draining_machines,omitempty"`
-	DownMachines     []*mesos.MachineID               `protobuf:"bytes,2,rep,name=down_machines,json=downMachines" json:"down_machines,omitempty"`
-	XXX_unrecognized []byte                           `json:"-"`
+	DrainingMachines []*ClusterStatus_DrainingMachine `protobuf:"bytes,1,rep,name=draining_machines" json:"draining_machines,omitempty"`
+	DownMachines     []*mesos.MachineID               `protobuf:"bytes,2,rep,name=down_machines" json:"down_machines,omitempty"`
 }
 
 func (m *ClusterStatus) Reset()                    { *m = ClusterStatus{} }
-func (m *ClusterStatus) String() string            { return proto.CompactTextString(m) }
 func (*ClusterStatus) ProtoMessage()               {}
 func (*ClusterStatus) Descriptor() ([]byte, []int) { return fileDescriptorMaintenance, []int{2} }
 
@@ -115,13 +117,11 @@ type ClusterStatus_DrainingMachine struct {
 	Id *mesos.MachineID `protobuf:"bytes,1,req,name=id" json:"id,omitempty"`
 	// A list of the most recent responses to inverse offers from frameworks
 	// running on this draining machine.
-	Statuses         []*mesos_allocator.InverseOfferStatus `protobuf:"bytes,2,rep,name=statuses" json:"statuses,omitempty"`
-	XXX_unrecognized []byte                                `json:"-"`
+	Statuses []*mesos_allocator.InverseOfferStatus `protobuf:"bytes,2,rep,name=statuses" json:"statuses,omitempty"`
 }
 
-func (m *ClusterStatus_DrainingMachine) Reset()         { *m = ClusterStatus_DrainingMachine{} }
-func (m *ClusterStatus_DrainingMachine) String() string { return proto.CompactTextString(m) }
-func (*ClusterStatus_DrainingMachine) ProtoMessage()    {}
+func (m *ClusterStatus_DrainingMachine) Reset()      { *m = ClusterStatus_DrainingMachine{} }
+func (*ClusterStatus_DrainingMachine) ProtoMessage() {}
 func (*ClusterStatus_DrainingMachine) Descriptor() ([]byte, []int) {
 	return fileDescriptorMaintenance, []int{2, 0}
 }
@@ -146,32 +146,1407 @@ func init() {
 	proto.RegisterType((*ClusterStatus)(nil), "mesos.maintenance.ClusterStatus")
 	proto.RegisterType((*ClusterStatus_DrainingMachine)(nil), "mesos.maintenance.ClusterStatus.DrainingMachine")
 }
+func (this *Window) VerboseEqual(that interface{}) error {
+	if that == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that == nil && this != nil")
+	}
+
+	that1, ok := that.(*Window)
+	if !ok {
+		that2, ok := that.(Window)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Window")
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that is type *Window but is nil && this != nil")
+	} else if this == nil {
+		return fmt.Errorf("that is type *Window but is not nil && this == nil")
+	}
+	if len(this.MachineIds) != len(that1.MachineIds) {
+		return fmt.Errorf("MachineIds this(%v) Not Equal that(%v)", len(this.MachineIds), len(that1.MachineIds))
+	}
+	for i := range this.MachineIds {
+		if !this.MachineIds[i].Equal(that1.MachineIds[i]) {
+			return fmt.Errorf("MachineIds this[%v](%v) Not Equal that[%v](%v)", i, this.MachineIds[i], i, that1.MachineIds[i])
+		}
+	}
+	if !this.Unavailability.Equal(that1.Unavailability) {
+		return fmt.Errorf("Unavailability this(%v) Not Equal that(%v)", this.Unavailability, that1.Unavailability)
+	}
+	return nil
+}
+func (this *Window) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Window)
+	if !ok {
+		that2, ok := that.(Window)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if len(this.MachineIds) != len(that1.MachineIds) {
+		return false
+	}
+	for i := range this.MachineIds {
+		if !this.MachineIds[i].Equal(that1.MachineIds[i]) {
+			return false
+		}
+	}
+	if !this.Unavailability.Equal(that1.Unavailability) {
+		return false
+	}
+	return true
+}
+func (this *Schedule) VerboseEqual(that interface{}) error {
+	if that == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that == nil && this != nil")
+	}
+
+	that1, ok := that.(*Schedule)
+	if !ok {
+		that2, ok := that.(Schedule)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *Schedule")
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that is type *Schedule but is nil && this != nil")
+	} else if this == nil {
+		return fmt.Errorf("that is type *Schedule but is not nil && this == nil")
+	}
+	if len(this.Windows) != len(that1.Windows) {
+		return fmt.Errorf("Windows this(%v) Not Equal that(%v)", len(this.Windows), len(that1.Windows))
+	}
+	for i := range this.Windows {
+		if !this.Windows[i].Equal(that1.Windows[i]) {
+			return fmt.Errorf("Windows this[%v](%v) Not Equal that[%v](%v)", i, this.Windows[i], i, that1.Windows[i])
+		}
+	}
+	return nil
+}
+func (this *Schedule) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Schedule)
+	if !ok {
+		that2, ok := that.(Schedule)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if len(this.Windows) != len(that1.Windows) {
+		return false
+	}
+	for i := range this.Windows {
+		if !this.Windows[i].Equal(that1.Windows[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *ClusterStatus) VerboseEqual(that interface{}) error {
+	if that == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that == nil && this != nil")
+	}
+
+	that1, ok := that.(*ClusterStatus)
+	if !ok {
+		that2, ok := that.(ClusterStatus)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *ClusterStatus")
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that is type *ClusterStatus but is nil && this != nil")
+	} else if this == nil {
+		return fmt.Errorf("that is type *ClusterStatus but is not nil && this == nil")
+	}
+	if len(this.DrainingMachines) != len(that1.DrainingMachines) {
+		return fmt.Errorf("DrainingMachines this(%v) Not Equal that(%v)", len(this.DrainingMachines), len(that1.DrainingMachines))
+	}
+	for i := range this.DrainingMachines {
+		if !this.DrainingMachines[i].Equal(that1.DrainingMachines[i]) {
+			return fmt.Errorf("DrainingMachines this[%v](%v) Not Equal that[%v](%v)", i, this.DrainingMachines[i], i, that1.DrainingMachines[i])
+		}
+	}
+	if len(this.DownMachines) != len(that1.DownMachines) {
+		return fmt.Errorf("DownMachines this(%v) Not Equal that(%v)", len(this.DownMachines), len(that1.DownMachines))
+	}
+	for i := range this.DownMachines {
+		if !this.DownMachines[i].Equal(that1.DownMachines[i]) {
+			return fmt.Errorf("DownMachines this[%v](%v) Not Equal that[%v](%v)", i, this.DownMachines[i], i, that1.DownMachines[i])
+		}
+	}
+	return nil
+}
+func (this *ClusterStatus) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*ClusterStatus)
+	if !ok {
+		that2, ok := that.(ClusterStatus)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if len(this.DrainingMachines) != len(that1.DrainingMachines) {
+		return false
+	}
+	for i := range this.DrainingMachines {
+		if !this.DrainingMachines[i].Equal(that1.DrainingMachines[i]) {
+			return false
+		}
+	}
+	if len(this.DownMachines) != len(that1.DownMachines) {
+		return false
+	}
+	for i := range this.DownMachines {
+		if !this.DownMachines[i].Equal(that1.DownMachines[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *ClusterStatus_DrainingMachine) VerboseEqual(that interface{}) error {
+	if that == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that == nil && this != nil")
+	}
+
+	that1, ok := that.(*ClusterStatus_DrainingMachine)
+	if !ok {
+		that2, ok := that.(ClusterStatus_DrainingMachine)
+		if ok {
+			that1 = &that2
+		} else {
+			return fmt.Errorf("that is not of type *ClusterStatus_DrainingMachine")
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return nil
+		}
+		return fmt.Errorf("that is type *ClusterStatus_DrainingMachine but is nil && this != nil")
+	} else if this == nil {
+		return fmt.Errorf("that is type *ClusterStatus_DrainingMachine but is not nil && this == nil")
+	}
+	if !this.Id.Equal(that1.Id) {
+		return fmt.Errorf("Id this(%v) Not Equal that(%v)", this.Id, that1.Id)
+	}
+	if len(this.Statuses) != len(that1.Statuses) {
+		return fmt.Errorf("Statuses this(%v) Not Equal that(%v)", len(this.Statuses), len(that1.Statuses))
+	}
+	for i := range this.Statuses {
+		if !this.Statuses[i].Equal(that1.Statuses[i]) {
+			return fmt.Errorf("Statuses this[%v](%v) Not Equal that[%v](%v)", i, this.Statuses[i], i, that1.Statuses[i])
+		}
+	}
+	return nil
+}
+func (this *ClusterStatus_DrainingMachine) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*ClusterStatus_DrainingMachine)
+	if !ok {
+		that2, ok := that.(ClusterStatus_DrainingMachine)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Id.Equal(that1.Id) {
+		return false
+	}
+	if len(this.Statuses) != len(that1.Statuses) {
+		return false
+	}
+	for i := range this.Statuses {
+		if !this.Statuses[i].Equal(that1.Statuses[i]) {
+			return false
+		}
+	}
+	return true
+}
+func (this *Window) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&maintenance.Window{")
+	if this.MachineIds != nil {
+		s = append(s, "MachineIds: "+fmt.Sprintf("%#v", this.MachineIds)+",\n")
+	}
+	if this.Unavailability != nil {
+		s = append(s, "Unavailability: "+fmt.Sprintf("%#v", this.Unavailability)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Schedule) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&maintenance.Schedule{")
+	if this.Windows != nil {
+		s = append(s, "Windows: "+fmt.Sprintf("%#v", this.Windows)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ClusterStatus) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&maintenance.ClusterStatus{")
+	if this.DrainingMachines != nil {
+		s = append(s, "DrainingMachines: "+fmt.Sprintf("%#v", this.DrainingMachines)+",\n")
+	}
+	if this.DownMachines != nil {
+		s = append(s, "DownMachines: "+fmt.Sprintf("%#v", this.DownMachines)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ClusterStatus_DrainingMachine) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&maintenance.ClusterStatus_DrainingMachine{")
+	if this.Id != nil {
+		s = append(s, "Id: "+fmt.Sprintf("%#v", this.Id)+",\n")
+	}
+	if this.Statuses != nil {
+		s = append(s, "Statuses: "+fmt.Sprintf("%#v", this.Statuses)+",\n")
+	}
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func valueToGoStringMaintenance(v interface{}, typ string) string {
+	rv := reflect.ValueOf(v)
+	if rv.IsNil() {
+		return "nil"
+	}
+	pv := reflect.Indirect(rv).Interface()
+	return fmt.Sprintf("func(v %v) *%v { return &v } ( %#v )", typ, typ, pv)
+}
+func extensionToGoStringMaintenance(m github_com_gogo_protobuf_proto.Message) string {
+	e := github_com_gogo_protobuf_proto.GetUnsafeExtensionsMap(m)
+	if e == nil {
+		return "nil"
+	}
+	s := "proto.NewUnsafeXXX_InternalExtensions(map[int32]proto.Extension{"
+	keys := make([]int, 0, len(e))
+	for k := range e {
+		keys = append(keys, int(k))
+	}
+	sort.Ints(keys)
+	ss := []string{}
+	for _, k := range keys {
+		ss = append(ss, strconv.Itoa(k)+": "+e[int32(k)].GoString())
+	}
+	s += strings.Join(ss, ",") + "})"
+	return s
+}
+func (m *Window) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Window) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.MachineIds) > 0 {
+		for _, msg := range m.MachineIds {
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintMaintenance(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if m.Unavailability == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("unavailability")
+	} else {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintMaintenance(dAtA, i, uint64(m.Unavailability.Size()))
+		n1, err := m.Unavailability.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n1
+	}
+	return i, nil
+}
+
+func (m *Schedule) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Schedule) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Windows) > 0 {
+		for _, msg := range m.Windows {
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintMaintenance(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	return i, nil
+}
+
+func (m *ClusterStatus) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClusterStatus) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.DrainingMachines) > 0 {
+		for _, msg := range m.DrainingMachines {
+			dAtA[i] = 0xa
+			i++
+			i = encodeVarintMaintenance(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	if len(m.DownMachines) > 0 {
+		for _, msg := range m.DownMachines {
+			dAtA[i] = 0x12
+			i++
+			i = encodeVarintMaintenance(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	return i, nil
+}
+
+func (m *ClusterStatus_DrainingMachine) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClusterStatus_DrainingMachine) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Id == nil {
+		return 0, github_com_gogo_protobuf_proto.NewRequiredNotSetError("id")
+	} else {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintMaintenance(dAtA, i, uint64(m.Id.Size()))
+		n2, err := m.Id.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n2
+	}
+	if len(m.Statuses) > 0 {
+		for _, msg := range m.Statuses {
+			dAtA[i] = 0x12
+			i++
+			i = encodeVarintMaintenance(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
+	return i, nil
+}
+
+func encodeFixed64Maintenance(dAtA []byte, offset int, v uint64) int {
+	dAtA[offset] = uint8(v)
+	dAtA[offset+1] = uint8(v >> 8)
+	dAtA[offset+2] = uint8(v >> 16)
+	dAtA[offset+3] = uint8(v >> 24)
+	dAtA[offset+4] = uint8(v >> 32)
+	dAtA[offset+5] = uint8(v >> 40)
+	dAtA[offset+6] = uint8(v >> 48)
+	dAtA[offset+7] = uint8(v >> 56)
+	return offset + 8
+}
+func encodeFixed32Maintenance(dAtA []byte, offset int, v uint32) int {
+	dAtA[offset] = uint8(v)
+	dAtA[offset+1] = uint8(v >> 8)
+	dAtA[offset+2] = uint8(v >> 16)
+	dAtA[offset+3] = uint8(v >> 24)
+	return offset + 4
+}
+func encodeVarintMaintenance(dAtA []byte, offset int, v uint64) int {
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return offset + 1
+}
+func NewPopulatedWindow(r randyMaintenance, easy bool) *Window {
+	this := &Window{}
+	if r.Intn(10) != 0 {
+		v1 := r.Intn(5)
+		this.MachineIds = make([]*mesos.MachineID, v1)
+		for i := 0; i < v1; i++ {
+			this.MachineIds[i] = mesos.NewPopulatedMachineID(r, easy)
+		}
+	}
+	this.Unavailability = mesos.NewPopulatedUnavailability(r, easy)
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedSchedule(r randyMaintenance, easy bool) *Schedule {
+	this := &Schedule{}
+	if r.Intn(10) != 0 {
+		v2 := r.Intn(5)
+		this.Windows = make([]*Window, v2)
+		for i := 0; i < v2; i++ {
+			this.Windows[i] = NewPopulatedWindow(r, easy)
+		}
+	}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedClusterStatus(r randyMaintenance, easy bool) *ClusterStatus {
+	this := &ClusterStatus{}
+	if r.Intn(10) != 0 {
+		v3 := r.Intn(5)
+		this.DrainingMachines = make([]*ClusterStatus_DrainingMachine, v3)
+		for i := 0; i < v3; i++ {
+			this.DrainingMachines[i] = NewPopulatedClusterStatus_DrainingMachine(r, easy)
+		}
+	}
+	if r.Intn(10) != 0 {
+		v4 := r.Intn(5)
+		this.DownMachines = make([]*mesos.MachineID, v4)
+		for i := 0; i < v4; i++ {
+			this.DownMachines[i] = mesos.NewPopulatedMachineID(r, easy)
+		}
+	}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+func NewPopulatedClusterStatus_DrainingMachine(r randyMaintenance, easy bool) *ClusterStatus_DrainingMachine {
+	this := &ClusterStatus_DrainingMachine{}
+	this.Id = mesos.NewPopulatedMachineID(r, easy)
+	if r.Intn(10) != 0 {
+		v5 := r.Intn(5)
+		this.Statuses = make([]*mesos_allocator.InverseOfferStatus, v5)
+		for i := 0; i < v5; i++ {
+			this.Statuses[i] = mesos_allocator.NewPopulatedInverseOfferStatus(r, easy)
+		}
+	}
+	if !easy && r.Intn(10) != 0 {
+	}
+	return this
+}
+
+type randyMaintenance interface {
+	Float32() float32
+	Float64() float64
+	Int63() int64
+	Int31() int32
+	Uint32() uint32
+	Intn(n int) int
+}
+
+func randUTF8RuneMaintenance(r randyMaintenance) rune {
+	ru := r.Intn(62)
+	if ru < 10 {
+		return rune(ru + 48)
+	} else if ru < 36 {
+		return rune(ru + 55)
+	}
+	return rune(ru + 61)
+}
+func randStringMaintenance(r randyMaintenance) string {
+	v6 := r.Intn(100)
+	tmps := make([]rune, v6)
+	for i := 0; i < v6; i++ {
+		tmps[i] = randUTF8RuneMaintenance(r)
+	}
+	return string(tmps)
+}
+func randUnrecognizedMaintenance(r randyMaintenance, maxFieldNumber int) (dAtA []byte) {
+	l := r.Intn(5)
+	for i := 0; i < l; i++ {
+		wire := r.Intn(4)
+		if wire == 3 {
+			wire = 5
+		}
+		fieldNumber := maxFieldNumber + r.Intn(100)
+		dAtA = randFieldMaintenance(dAtA, r, fieldNumber, wire)
+	}
+	return dAtA
+}
+func randFieldMaintenance(dAtA []byte, r randyMaintenance, fieldNumber int, wire int) []byte {
+	key := uint32(fieldNumber)<<3 | uint32(wire)
+	switch wire {
+	case 0:
+		dAtA = encodeVarintPopulateMaintenance(dAtA, uint64(key))
+		v7 := r.Int63()
+		if r.Intn(2) == 0 {
+			v7 *= -1
+		}
+		dAtA = encodeVarintPopulateMaintenance(dAtA, uint64(v7))
+	case 1:
+		dAtA = encodeVarintPopulateMaintenance(dAtA, uint64(key))
+		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
+	case 2:
+		dAtA = encodeVarintPopulateMaintenance(dAtA, uint64(key))
+		ll := r.Intn(100)
+		dAtA = encodeVarintPopulateMaintenance(dAtA, uint64(ll))
+		for j := 0; j < ll; j++ {
+			dAtA = append(dAtA, byte(r.Intn(256)))
+		}
+	default:
+		dAtA = encodeVarintPopulateMaintenance(dAtA, uint64(key))
+		dAtA = append(dAtA, byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)), byte(r.Intn(256)))
+	}
+	return dAtA
+}
+func encodeVarintPopulateMaintenance(dAtA []byte, v uint64) []byte {
+	for v >= 1<<7 {
+		dAtA = append(dAtA, uint8(uint64(v)&0x7f|0x80))
+		v >>= 7
+	}
+	dAtA = append(dAtA, uint8(v))
+	return dAtA
+}
+func (m *Window) Size() (n int) {
+	var l int
+	_ = l
+	if len(m.MachineIds) > 0 {
+		for _, e := range m.MachineIds {
+			l = e.Size()
+			n += 1 + l + sovMaintenance(uint64(l))
+		}
+	}
+	if m.Unavailability != nil {
+		l = m.Unavailability.Size()
+		n += 1 + l + sovMaintenance(uint64(l))
+	}
+	return n
+}
+
+func (m *Schedule) Size() (n int) {
+	var l int
+	_ = l
+	if len(m.Windows) > 0 {
+		for _, e := range m.Windows {
+			l = e.Size()
+			n += 1 + l + sovMaintenance(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ClusterStatus) Size() (n int) {
+	var l int
+	_ = l
+	if len(m.DrainingMachines) > 0 {
+		for _, e := range m.DrainingMachines {
+			l = e.Size()
+			n += 1 + l + sovMaintenance(uint64(l))
+		}
+	}
+	if len(m.DownMachines) > 0 {
+		for _, e := range m.DownMachines {
+			l = e.Size()
+			n += 1 + l + sovMaintenance(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *ClusterStatus_DrainingMachine) Size() (n int) {
+	var l int
+	_ = l
+	if m.Id != nil {
+		l = m.Id.Size()
+		n += 1 + l + sovMaintenance(uint64(l))
+	}
+	if len(m.Statuses) > 0 {
+		for _, e := range m.Statuses {
+			l = e.Size()
+			n += 1 + l + sovMaintenance(uint64(l))
+		}
+	}
+	return n
+}
+
+func sovMaintenance(x uint64) (n int) {
+	for {
+		n++
+		x >>= 7
+		if x == 0 {
+			break
+		}
+	}
+	return n
+}
+func sozMaintenance(x uint64) (n int) {
+	return sovMaintenance(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (this *Window) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Window{`,
+		`MachineIds:` + strings.Replace(fmt.Sprintf("%v", this.MachineIds), "MachineID", "mesos.MachineID", 1) + `,`,
+		`Unavailability:` + strings.Replace(fmt.Sprintf("%v", this.Unavailability), "Unavailability", "mesos.Unavailability", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Schedule) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Schedule{`,
+		`Windows:` + strings.Replace(fmt.Sprintf("%v", this.Windows), "Window", "Window", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ClusterStatus) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ClusterStatus{`,
+		`DrainingMachines:` + strings.Replace(fmt.Sprintf("%v", this.DrainingMachines), "ClusterStatus_DrainingMachine", "ClusterStatus_DrainingMachine", 1) + `,`,
+		`DownMachines:` + strings.Replace(fmt.Sprintf("%v", this.DownMachines), "MachineID", "mesos.MachineID", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ClusterStatus_DrainingMachine) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ClusterStatus_DrainingMachine{`,
+		`Id:` + strings.Replace(fmt.Sprintf("%v", this.Id), "MachineID", "mesos.MachineID", 1) + `,`,
+		`Statuses:` + strings.Replace(fmt.Sprintf("%v", this.Statuses), "InverseOfferStatus", "mesos_allocator.InverseOfferStatus", 1) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func valueToStringMaintenance(v interface{}) string {
+	rv := reflect.ValueOf(v)
+	if rv.IsNil() {
+		return "nil"
+	}
+	pv := reflect.Indirect(rv).Interface()
+	return fmt.Sprintf("*%v", pv)
+}
+func (m *Window) Unmarshal(dAtA []byte) error {
+	var hasFields [1]uint64
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMaintenance
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Window: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Window: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MachineIds", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MachineIds = append(m.MachineIds, &mesos.MachineID{})
+			if err := m.MachineIds[len(m.MachineIds)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Unavailability", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Unavailability == nil {
+				m.Unavailability = &mesos.Unavailability{}
+			}
+			if err := m.Unavailability.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+			hasFields[0] |= uint64(0x00000001)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMaintenance(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+	if hasFields[0]&uint64(0x00000001) == 0 {
+		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("unavailability")
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Schedule) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMaintenance
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Schedule: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Schedule: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Windows", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Windows = append(m.Windows, &Window{})
+			if err := m.Windows[len(m.Windows)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMaintenance(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ClusterStatus) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMaintenance
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClusterStatus: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClusterStatus: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DrainingMachines", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DrainingMachines = append(m.DrainingMachines, &ClusterStatus_DrainingMachine{})
+			if err := m.DrainingMachines[len(m.DrainingMachines)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DownMachines", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DownMachines = append(m.DownMachines, &mesos.MachineID{})
+			if err := m.DownMachines[len(m.DownMachines)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMaintenance(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ClusterStatus_DrainingMachine) Unmarshal(dAtA []byte) error {
+	var hasFields [1]uint64
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowMaintenance
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DrainingMachine: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DrainingMachine: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Id == nil {
+				m.Id = &mesos.MachineID{}
+			}
+			if err := m.Id.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+			hasFields[0] |= uint64(0x00000001)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Statuses", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Statuses = append(m.Statuses, &mesos_allocator.InverseOfferStatus{})
+			if err := m.Statuses[len(m.Statuses)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipMaintenance(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthMaintenance
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+	if hasFields[0]&uint64(0x00000001) == 0 {
+		return github_com_gogo_protobuf_proto.NewRequiredNotSetError("id")
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipMaintenance(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowMaintenance
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+			return iNdEx, nil
+		case 1:
+			iNdEx += 8
+			return iNdEx, nil
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowMaintenance
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			iNdEx += length
+			if length < 0 {
+				return 0, ErrInvalidLengthMaintenance
+			}
+			return iNdEx, nil
+		case 3:
+			for {
+				var innerWire uint64
+				var start int = iNdEx
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return 0, ErrIntOverflowMaintenance
+					}
+					if iNdEx >= l {
+						return 0, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					innerWire |= (uint64(b) & 0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				innerWireType := int(innerWire & 0x7)
+				if innerWireType == 4 {
+					break
+				}
+				next, err := skipMaintenance(dAtA[start:])
+				if err != nil {
+					return 0, err
+				}
+				iNdEx = start + next
+			}
+			return iNdEx, nil
+		case 4:
+			return iNdEx, nil
+		case 5:
+			iNdEx += 4
+			return iNdEx, nil
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+	}
+	panic("unreachable")
+}
+
+var (
+	ErrInvalidLengthMaintenance = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowMaintenance   = fmt.Errorf("proto: integer overflow")
+)
 
 func init() { proto.RegisterFile("maintenance/maintenance.proto", fileDescriptorMaintenance) }
 
 var fileDescriptorMaintenance = []byte{
-	// 359 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x84, 0x51, 0x4d, 0x4b, 0x2b, 0x31,
-	0x14, 0xa5, 0xf3, 0xe0, 0xbd, 0x92, 0x79, 0xd5, 0x36, 0x20, 0xd4, 0x82, 0x50, 0xea, 0xa6, 0x9b,
-	0x66, 0xb4, 0xe2, 0x4a, 0xa4, 0xa0, 0xdd, 0x74, 0x21, 0xc2, 0x14, 0x11, 0x04, 0x29, 0x99, 0x49,
-	0x66, 0x1a, 0xc8, 0x24, 0x92, 0x8f, 0x16, 0xfd, 0x2b, 0xfe, 0x59, 0x69, 0x26, 0xd3, 0x4f, 0xc5,
-	0xdd, 0xc9, 0xbd, 0xe7, 0x9c, 0x7b, 0xee, 0x0d, 0x38, 0x2b, 0x30, 0x13, 0x86, 0x0a, 0x2c, 0x52,
-	0x1a, 0x6d, 0x61, 0xf4, 0xa6, 0xa4, 0x91, 0xb0, 0x55, 0x50, 0x2d, 0x35, 0xda, 0x6a, 0x74, 0x06,
-	0xa9, 0x24, 0x14, 0xd9, 0x84, 0x2a, 0xb4, 0x2a, 0x2a, 0x81, 0x79, 0xc4, 0x44, 0xa6, 0x70, 0xe4,
-	0xb8, 0x83, 0x5c, 0x96, 0xa0, 0x74, 0xe8, 0xdc, 0xfc, 0x4e, 0xc7, 0x9c, 0xcb, 0x14, 0x1b, 0xa9,
-	0x36, 0xc8, 0x8b, 0x07, 0x39, 0x33, 0x73, 0x9b, 0xa0, 0x54, 0x16, 0x51, 0x2e, 0x73, 0x19, 0xb9,
-	0x72, 0x62, 0x33, 0xf7, 0x72, 0x0f, 0x87, 0x4a, 0x7a, 0xef, 0x03, 0xfc, 0x7d, 0x66, 0x82, 0xc8,
-	0x25, 0xbc, 0x04, 0x61, 0x81, 0xd3, 0x39, 0x13, 0x74, 0xc6, 0x88, 0x6e, 0xd7, 0xba, 0x7f, 0xfa,
-	0xe1, 0xb0, 0x89, 0xca, 0x60, 0x0f, 0x65, 0x67, 0x32, 0x8e, 0x81, 0x27, 0x4d, 0x88, 0x86, 0xb7,
-	0xe0, 0xc8, 0x0a, 0xbc, 0xc0, 0x8c, 0xe3, 0x84, 0x71, 0x66, 0xde, 0xdb, 0x41, 0x37, 0xe8, 0x87,
-	0xc3, 0x13, 0xaf, 0x7a, 0xda, 0x69, 0xc6, 0x7b, 0xe4, 0xde, 0x08, 0xd4, 0xa7, 0xe9, 0x9c, 0x12,
-	0xcb, 0x29, 0xbc, 0x02, 0xff, 0x96, 0x2e, 0x47, 0x35, 0xf9, 0x14, 0x1d, 0xdc, 0x11, 0x95, 0x49,
-	0xe3, 0x8a, 0xd9, 0xfb, 0x0c, 0x40, 0xe3, 0x9e, 0x5b, 0x6d, 0xa8, 0x9a, 0x1a, 0x6c, 0xac, 0x86,
-	0xaf, 0xa0, 0x45, 0x14, 0x66, 0x82, 0x89, 0x7c, 0xe6, 0x83, 0x56, 0x86, 0x17, 0xdf, 0x18, 0xee,
-	0x88, 0xd1, 0xd8, 0x2b, 0xfd, 0xb2, 0x71, 0x93, 0xec, 0x16, 0x34, 0xbc, 0x06, 0x0d, 0x22, 0x97,
-	0x62, 0x63, 0x1d, 0xfc, 0x70, 0xa5, 0xff, 0x2b, 0x5a, 0x25, 0xeb, 0x18, 0x70, 0xbc, 0xe7, 0x0d,
-	0xbb, 0x20, 0x60, 0xa4, 0x5d, 0x73, 0xe7, 0x3a, 0x94, 0x07, 0x8c, 0xc0, 0x11, 0xa8, 0x6b, 0x97,
-	0x6b, 0x3d, 0xe6, 0xdc, 0xf3, 0x36, 0x5f, 0x3e, 0x11, 0x0b, 0xaa, 0x34, 0x7d, 0xcc, 0xb2, 0x6a,
-	0x89, 0x78, 0x2d, 0xba, 0x6b, 0xbc, 0x84, 0x5b, 0xbb, 0x7e, 0x05, 0x00, 0x00, 0xff, 0xff, 0x03,
-	0x95, 0xb6, 0x65, 0xb7, 0x02, 0x00, 0x00,
+	// 404 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x09, 0x6e, 0x88, 0x02, 0xff, 0x84, 0x51, 0x31, 0x8b, 0xdb, 0x30,
+	0x18, 0xb5, 0x5c, 0x68, 0x83, 0x4c, 0xda, 0xc6, 0x50, 0x48, 0x43, 0x2b, 0x42, 0x4a, 0x69, 0x28,
+	0x58, 0x2e, 0x81, 0x76, 0xe9, 0xd6, 0x66, 0x09, 0xa5, 0x74, 0x08, 0xa5, 0xd0, 0xa1, 0x41, 0xb6,
+	0x65, 0x47, 0x60, 0x4b, 0x45, 0x96, 0x13, 0xba, 0xf5, 0x27, 0xdc, 0xcf, 0xb8, 0x9f, 0x70, 0xe3,
+	0x8d, 0x37, 0x66, 0xbc, 0x31, 0xd6, 0x2d, 0xb7, 0x1c, 0x64, 0xbc, 0xf1, 0x38, 0xd9, 0xb9, 0x24,
+	0x97, 0xc0, 0x6d, 0x4f, 0xfa, 0xde, 0x7b, 0x7a, 0xef, 0x13, 0x7c, 0x9d, 0x11, 0xc6, 0x15, 0xe5,
+	0x84, 0x87, 0xd4, 0xdf, 0xc2, 0xf8, 0xaf, 0x14, 0x4a, 0xb8, 0xad, 0x8c, 0xe6, 0x22, 0xc7, 0x5b,
+	0x83, 0x8e, 0x17, 0x8a, 0x88, 0xe2, 0x22, 0xa0, 0x12, 0xdf, 0x5e, 0x4a, 0x4e, 0x52, 0x9f, 0xf1,
+	0x58, 0x12, 0xdf, 0x70, 0xbd, 0x44, 0x54, 0xa0, 0x72, 0xe8, 0x7c, 0x7e, 0x98, 0x4e, 0xd2, 0x54,
+	0x84, 0x44, 0x09, 0xb9, 0x41, 0xb5, 0xd8, 0x4b, 0x98, 0x9a, 0x16, 0x01, 0x0e, 0x45, 0xe6, 0x27,
+	0x22, 0x11, 0xbe, 0xb9, 0x0e, 0x8a, 0xd8, 0x9c, 0xcc, 0xc1, 0xa0, 0x8a, 0xde, 0xfb, 0x03, 0x1f,
+	0xff, 0x62, 0x3c, 0x12, 0x73, 0xf7, 0x2d, 0x74, 0x32, 0x12, 0x4e, 0x19, 0xa7, 0x13, 0x16, 0xe5,
+	0x6d, 0xd0, 0x7d, 0xd4, 0x77, 0x06, 0xcf, 0x71, 0x15, 0xec, 0x7b, 0x35, 0x19, 0x0d, 0x5d, 0x0f,
+	0x3e, 0x2d, 0x38, 0x99, 0x11, 0x96, 0x92, 0x80, 0xa5, 0x4c, 0xfd, 0x6b, 0xdb, 0x5d, 0xbb, 0xef,
+	0x0c, 0x5e, 0xd4, 0xcc, 0x9f, 0x3b, 0xc3, 0xde, 0x27, 0xd8, 0x18, 0x87, 0x53, 0x1a, 0x15, 0x29,
+	0x75, 0xdf, 0xc3, 0x27, 0x73, 0xf3, 0xd6, 0xda, 0xfd, 0x25, 0xde, 0xdb, 0x15, 0xae, 0xd2, 0xf4,
+	0xae, 0x00, 0x6c, 0x7e, 0x4d, 0x8b, 0x5c, 0x51, 0x39, 0x56, 0x44, 0x15, 0xb9, 0xfb, 0x0d, 0xb6,
+	0x22, 0x49, 0x18, 0x67, 0x3c, 0x99, 0xd4, 0x41, 0xd7, 0x3e, 0x1f, 0x0e, 0xf8, 0xec, 0x88, 0xf1,
+	0xb0, 0x56, 0xd6, 0x3d, 0xdc, 0x77, 0xb0, 0x19, 0x89, 0x39, 0xdf, 0x18, 0xd9, 0x87, 0xeb, 0x76,
+	0x62, 0xf8, 0xec, 0xbe, 0xf6, 0x15, 0xb4, 0x59, 0xd4, 0x06, 0xa6, 0xf5, 0xfe, 0x7e, 0x3e, 0xc2,
+	0x46, 0x6e, 0xde, 0xbc, 0x33, 0x7d, 0x53, 0x73, 0x36, 0x3f, 0x35, 0xe2, 0x33, 0x2a, 0x73, 0xfa,
+	0x23, 0x8e, 0xd7, 0x01, 0xbf, 0x8c, 0x16, 0x25, 0xb2, 0xce, 0x4b, 0x64, 0x2d, 0x4b, 0x04, 0x56,
+	0x25, 0x02, 0xd7, 0x25, 0x02, 0xff, 0x35, 0x02, 0xc7, 0x1a, 0x81, 0x13, 0x8d, 0xc0, 0xa9, 0x46,
+	0xe0, 0x4c, 0x23, 0xb0, 0xd0, 0x08, 0x2c, 0x35, 0x02, 0x97, 0x1a, 0x59, 0x2b, 0x8d, 0xc0, 0xd1,
+	0x05, 0xb2, 0x7e, 0x3b, 0x5b, 0xcd, 0x6f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x71, 0x47, 0x0d, 0x1c,
+	0xa0, 0x02, 0x00, 0x00,
 }

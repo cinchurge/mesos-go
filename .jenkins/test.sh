@@ -31,5 +31,4 @@ go test -v -coverprofile=coverage.out | tee test.log
 go-junit-report < test.log > ${WORKSPACE}/junit.xml
 
 # Generate coverage report
-go tool cover -html=coverage.out
 gocov convert coverage.out | gocov-xml | sed 's|filename=".*code.uber.internal/infra/mesos-go/|filename="|' > ${WORKSPACE}/coverage.xml

@@ -37,7 +37,16 @@ func (mj *InverseOfferStatus) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if mj.Status != nil {
 		if true {
 			buf.WriteString(`"status":`)
-			fflib.FormatBits2(buf, uint64(*mj.Status), 10, *mj.Status < 0)
+
+			{
+
+				obj, err = mj.Status.MarshalJSON()
+				if err != nil {
+					return err
+				}
+				buf.Write(obj)
+
+			}
 			buf.WriteByte(',')
 		}
 	}
