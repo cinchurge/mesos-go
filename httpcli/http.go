@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"time"
 
 	"code.uber.internal/infra/mesos-go"
@@ -113,7 +114,6 @@ type ResponseHandler func(*http.Response, error) (mesos.Response, error)
 // A Client is a Mesos HTTP APIs client.
 type Client struct {
 	url            string
-	method         string
 	do             DoFunc
 	header         http.Header
 	codec          *encoding.Codec
@@ -128,7 +128,6 @@ type Client struct {
 // invoking Do.
 func New(opts ...Opt) *Client {
 	c := &Client{
-		method:      "POST",
 		codec:       &encoding.ProtobufCodec,
 		do:          With(),
 		header:      http.Header{},
@@ -187,18 +186,13 @@ func (c *Client) Mesos(opts ...RequestOpt) mesos.Client {
 // BuildRequest is a factory func that generates and returns an http.Request for the
 // given marshaler and request options.
 func (c *Client) BuildRequest(m encoding.Marshaler, opt ...RequestOpt) (*http.Request, error) {
-	var bodyPtr *bytes.Buffer
+	var body bytes.Buffer //TODO(jdef): use a pool to allocate these (and reduce garbage)?
 
-	// Marshalize payload if it isn't nil
-	if m != nil {
-		var body bytes.Buffer //TODO(jdef): use a pool to allocate these (and reduce garbage)?
-		if err := c.codec.NewEncoder(&body).Invoke(m); err != nil {
-			return nil, err
-		}
-		bodyPtr = &body
+	if err := c.codec.NewEncoder(&body).Invoke(m); err != nil {
+		return nil, err
 	}
 
-	req, err := http.NewRequest(c.method, c.url, bodyPtr)
+	req, err := http.NewRequest("POST", c.url, &body)
 	if err != nil {
 		return nil, err
 	}
@@ -281,15 +275,6 @@ func Endpoint(rawurl string) Opt {
 	}
 }
 
-// Method returns an Opt that overrides the default method
-func Method(method string) Opt {
-	return func(c *Client) Opt {
-		old := c.method
-		c.method = method
-		return Method(old)
-	}
-}
-
 // WrapDoer returns an Opt that decorates a Client's DoFunc
 func WrapDoer(f func(DoFunc) DoFunc) Opt {
 	return func(c *Client) Opt {
@@ -354,6 +339,12 @@ func RequestOptions(opts ...RequestOpt) Opt {
 		return RequestOptions(old...)
 	}
 }
+
+// URL returns a RequestOpt that sets the URL of the HTTP request
+func URL(url *url.URL) RequestOpt { return func(r *http.Request) { r.URL = url } }
+
+// Method returns a RequestOpt that sets the method of the HTTP request
+func Method(method string) RequestOpt { return func(r *http.Request) { r.Method = method } }
 
 // Header returns an RequestOpt that adds a header value to an HTTP requests's header.
 func Header(k, v string) RequestOpt { return func(r *http.Request) { r.Header.Add(k, v) } }
