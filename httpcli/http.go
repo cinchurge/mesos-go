@@ -14,6 +14,7 @@ import (
 
 	"code.uber.internal/infra/mesos-go"
 	"code.uber.internal/infra/mesos-go/encoding"
+	"code.uber.internal/infra/mesos-go/encoding/framing"
 	"code.uber.internal/infra/mesos-go/recordio"
 )
 
@@ -206,6 +207,35 @@ func (c *Client) BuildRequest(m encoding.Marshaler, opt ...RequestOpt) (*http.Re
 		Request, nil
 }
 
+// IdentityReader implements framing.Reader
+type IdentityReader struct {
+	r io.Reader
+}
+
+// ReadFrame reads at most len(buf) bytes from the reader
+func (fr IdentityReader) ReadFrame(buf []byte) (endOfFrame bool, n int, err error) {
+	tmpBuf := make([]byte, cap(buf))  // Temporary storage
+
+	// Read data
+	n, err = fr.r.Read(tmpBuf)
+	copy(buf, tmpBuf)
+
+	// If we got an error and it's an EOF, set endOfFrame and clear err. Otherwise
+	// do nothing
+	if err != nil {
+		if err == io.EOF {
+			endOfFrame = true
+			err = nil
+		}
+	}
+	return
+}
+
+// NewIdentityReader instantiates a new IdentityReader
+func NewIdentityReader(r io.Reader) framing.Reader {
+	return IdentityReader{r: r}
+}
+
 // HandleResponse parses an HTTP response from a Mesos service endpoint, transforming the
 // raw HTTP response into a mesos.Response.
 func (c *Client) HandleResponse(res *http.Response, err error) (mesos.Response, error) {
@@ -216,6 +246,11 @@ func (c *Client) HandleResponse(res *http.Response, err error) (mesos.Response, 
 		return nil, err
 	}
 
+	var TransferEncodingMap = map[string]func(io.Reader) framing.Reader{
+		"chunked": recordio.NewFrameReader,
+		"identity": NewIdentityReader,
+	}
+
 	var events encoding.Decoder
 	switch res.StatusCode {
 	case http.StatusOK:
@@ -223,11 +258,24 @@ func (c *Client) HandleResponse(res *http.Response, err error) (mesos.Response, 
 			log.Println("request OK, decoding response")
 		}
 		ct := res.Header.Get("Content-Type")
-		if ct != c.codec.MediaTypes[indexResponseContentType] {
+
+		// If ct is given but it doesn't match the codec configured for this client, return an error. Otherwise
+		// assume it is what we expect it to be. This should be changed to be more strict once MESOS-3601
+		// is fully implemented.
+		if len(ct) > 0 && ct != c.codec.MediaTypes[indexResponseContentType] {
 			res.Body.Close()
 			return nil, fmt.Errorf("unexpected content type: %q", ct) //TODO(jdef) extact this into a typed error
 		}
-		events = c.codec.NewDecoder(recordio.NewFrameReader(res.Body))
+
+		// Return the appropriate reader depending on Transfer-Encoding. This should eventually
+		// be checking Content-Encoding as well (ref MESOS-3601)
+		te := res.Header.Get("Transfer-Encoding")
+		newReader := TransferEncodingMap[te]
+		if newReader == nil {
+			newReader = NewIdentityReader
+		}
+		events = c.codec.NewDecoder(newReader(res.Body))
+
 	case http.StatusAccepted:
 		if debug {
 			log.Println("request Accepted")
