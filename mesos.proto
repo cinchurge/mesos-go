@@ -522,6 +522,20 @@ message AgentInfo {
 
 
 /**
+ * Describes a list of agents retrieved from the /slaves endpoint
+ */
+message Agents {
+  message Agent {
+    optional string id = 1;
+    required string hostname = 2;
+    required string pid = 3;
+  }
+
+  repeated Agent slaves = 1;
+}
+
+
+/**
  * Describes an Attribute or Resource "value". A value is described
  * using the standard protocol buffer "union" trick.
  */
