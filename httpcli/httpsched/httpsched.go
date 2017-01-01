@@ -7,12 +7,12 @@ import (
 	"net/url"
 	"time"
 
-	"code.uber.internal/infra/mesos-go"
-	"code.uber.internal/infra/mesos-go/backoff"
-	"code.uber.internal/infra/mesos-go/encoding"
-	"code.uber.internal/infra/mesos-go/httpcli"
-	"code.uber.internal/infra/mesos-go/scheduler"
-	"code.uber.internal/infra/mesos-go/scheduler/calls"
+	"github.com/mesos/mesos-go"
+	"github.com/mesos/mesos-go/backoff"
+	"github.com/mesos/mesos-go/encoding"
+	"github.com/mesos/mesos-go/httpcli"
+	"github.com/mesos/mesos-go/scheduler"
+	"github.com/mesos/mesos-go/scheduler/calls"
 )
 
 var (

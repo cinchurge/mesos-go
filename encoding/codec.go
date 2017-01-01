@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io"
 
-	"code.uber.internal/infra/mesos-go/encoding/framing"
-	"code.uber.internal/infra/mesos-go/encoding/proto"
+	"github.com/mesos/mesos-go/encoding/framing"
+	"github.com/mesos/mesos-go/encoding/proto"
 
 	pb "github.com/gogo/protobuf/proto"
 )

@@ -18,8 +18,8 @@ package maintenance
 import proto "github.com/gogo/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import mesos "code.uber.internal/infra/mesos-go"
-import mesos_allocator "code.uber.internal/infra/mesos-go/allocator"
+import mesos "github.com/mesos/mesos-go"
+import mesos_allocator "github.com/mesos/mesos-go/allocator"
 import _ "github.com/gogo/protobuf/gogoproto"
 
 import strings "strings"

@@ -3,7 +3,7 @@ package mesos
 import (
 	"io"
 
-	"code.uber.internal/infra/mesos-go/encoding"
+	"github.com/mesos/mesos-go/encoding"
 )
 
 // A Client represents a Mesos API client which can send Calls and return

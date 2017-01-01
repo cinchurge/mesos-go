@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"code.uber.internal/infra/mesos-go/encoding"
+	"github.com/mesos/mesos-go/encoding"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -30,7 +30,7 @@ func Test_HTTPCli(t *testing.T) {
 
 type exampleStruct struct {
 	StringField string
-	IntField int
+	IntField    int
 }
 
 func Test_IdentityReader(t *testing.T) {

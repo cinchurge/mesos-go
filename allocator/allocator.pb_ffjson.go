@@ -7,7 +7,7 @@ package allocator
 
 import (
 	"bytes"
-	"code.uber.internal/infra/mesos-go"
+	"github.com/mesos/mesos-go"
 	"fmt"
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 )

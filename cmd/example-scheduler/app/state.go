@@ -11,11 +11,11 @@ import (
 	"time"
 
 	proto "github.com/gogo/protobuf/proto"
-	"code.uber.internal/infra/mesos-go"
-	"code.uber.internal/infra/mesos-go/backoff"
-	"code.uber.internal/infra/mesos-go/httpcli"
-	"code.uber.internal/infra/mesos-go/httpcli/httpsched"
-	"code.uber.internal/infra/mesos-go/scheduler/calls"
+	"github.com/mesos/mesos-go"
+	"github.com/mesos/mesos-go/backoff"
+	"github.com/mesos/mesos-go/httpcli"
+	"github.com/mesos/mesos-go/httpcli/httpsched"
+	"github.com/mesos/mesos-go/scheduler/calls"
 )
 
 func prepareExecutorInfo(

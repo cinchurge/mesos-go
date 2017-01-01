@@ -12,10 +12,10 @@ import (
 	"net/url"
 	"time"
 
-	"code.uber.internal/infra/mesos-go"
-	"code.uber.internal/infra/mesos-go/encoding"
-	"code.uber.internal/infra/mesos-go/encoding/framing"
-	"code.uber.internal/infra/mesos-go/recordio"
+	"github.com/mesos/mesos-go"
+	"github.com/mesos/mesos-go/encoding"
+	"github.com/mesos/mesos-go/encoding/framing"
+	"github.com/mesos/mesos-go/recordio"
 )
 
 var (
@@ -214,7 +214,7 @@ type IdentityReader struct {
 
 // ReadFrame reads at most len(buf) bytes from the reader
 func (fr IdentityReader) ReadFrame(buf []byte) (endOfFrame bool, n int, err error) {
-	tmpBuf := make([]byte, cap(buf))  // Temporary storage
+	tmpBuf := make([]byte, cap(buf)) // Temporary storage
 
 	// Read data
 	n, err = fr.r.Read(tmpBuf)
@@ -247,7 +247,7 @@ func (c *Client) HandleResponse(res *http.Response, err error) (mesos.Response, 
 	}
 
 	var TransferEncodingMap = map[string]func(io.Reader) framing.Reader{
-		"chunked": recordio.NewFrameReader,
+		"chunked":  recordio.NewFrameReader,
 		"identity": NewIdentityReader,
 	}
 

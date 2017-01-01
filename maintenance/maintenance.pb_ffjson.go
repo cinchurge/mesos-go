@@ -7,8 +7,8 @@ package maintenance
 
 import (
 	"bytes"
-	"code.uber.internal/infra/mesos-go"
-	"code.uber.internal/infra/mesos-go/allocator"
+	"github.com/mesos/mesos-go"
+	"github.com/mesos/mesos-go/allocator"
 	"fmt"
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 )

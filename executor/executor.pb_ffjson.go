@@ -7,7 +7,7 @@ package executor
 
 import (
 	"bytes"
-	"code.uber.internal/infra/mesos-go"
+	"github.com/mesos/mesos-go"
 	"encoding/base64"
 	"fmt"
 	fflib "github.com/pquerna/ffjson/fflib/v1"

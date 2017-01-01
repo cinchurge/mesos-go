@@ -5,7 +5,7 @@ import (
 	"sort"
 	"testing"
 
-	"code.uber.internal/infra/mesos-go"
+	"github.com/mesos/mesos-go"
 )
 
 func TestResources_PrecisionRounding(t *testing.T) {

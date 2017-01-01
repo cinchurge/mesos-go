@@ -1,8 +1,8 @@
 package calls
 
 import (
-	"code.uber.internal/infra/mesos-go"
-	"code.uber.internal/infra/mesos-go/executor"
+	"github.com/mesos/mesos-go"
+	"github.com/mesos/mesos-go/executor"
 )
 
 // Framework sets a executor.Call's FrameworkID

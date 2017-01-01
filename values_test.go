@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	"code.uber.internal/infra/mesos-go"
+	"github.com/mesos/mesos-go"
 )
 
 func scalar(f float64) *mesos.Value_Scalar {

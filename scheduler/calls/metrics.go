@@ -3,9 +3,9 @@ package calls
 import (
 	"strings"
 
-	"code.uber.internal/infra/mesos-go"
-	xmetrics "code.uber.internal/infra/mesos-go/extras/metrics"
-	"code.uber.internal/infra/mesos-go/scheduler"
+	"github.com/mesos/mesos-go"
+	xmetrics "github.com/mesos/mesos-go/extras/metrics"
+	"github.com/mesos/mesos-go/scheduler"
 )
 
 func CallerMetrics(harness xmetrics.Harness) Decorator {

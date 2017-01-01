@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	. "code.uber.internal/infra/mesos-go/time"
+	. "github.com/mesos/mesos-go/time"
 )
 
 func TestParseDuration(t *testing.T) {

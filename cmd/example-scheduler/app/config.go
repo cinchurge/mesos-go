@@ -4,8 +4,8 @@ import (
 	"flag"
 	"time"
 
-	"code.uber.internal/infra/mesos-go/cmd"
-	"code.uber.internal/infra/mesos-go/encoding"
+	"github.com/mesos/mesos-go/cmd"
+	"github.com/mesos/mesos-go/encoding"
 )
 
 type Config struct {

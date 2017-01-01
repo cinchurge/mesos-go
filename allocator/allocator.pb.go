@@ -16,7 +16,7 @@ package allocator
 import proto "github.com/gogo/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import mesos "code.uber.internal/infra/mesos-go"
+import mesos "github.com/mesos/mesos-go"
 import _ "github.com/gogo/protobuf/gogoproto"
 
 import strconv "strconv"
